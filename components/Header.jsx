@@ -12,8 +12,10 @@ const Header = () => {
             {/* {right side section} */}
         </div>
         {/* search and location for mobile only */}
-        
+
       </nav>
+
+      {/* Modals */}
     </>
   )
 }
