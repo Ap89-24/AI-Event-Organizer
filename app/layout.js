@@ -2,6 +2,7 @@
 import Header from "@/components/Header";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
+import { ConvexClientProvider } from "./ConvexClientProvider";
 
 
 
@@ -20,6 +21,7 @@ export default function RootLayout({ children }) {
             enableSystem
             disableTransitionOnChange
           >
+            <ConvexClientProvider>
         {/* {Header} */}
 
            <Header />
@@ -42,6 +44,8 @@ export default function RootLayout({ children }) {
           </div>
         </footer>
         </main>
+
+        </ConvexClientProvider>
         </ThemeProvider>
 
       </body>
