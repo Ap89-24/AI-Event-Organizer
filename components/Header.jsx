@@ -1,8 +1,10 @@
-import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
+"use client";
+import {  SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { Button } from './ui/button'
+import {Authenticated , Unauthenticated} from "convex/react"
 
 const Header = () => {
   return (
@@ -25,17 +27,17 @@ const Header = () => {
 
             {/* {right side section} */}
             <div className='flex items-center'>
-               <SignedIn>
+               <Authenticated>
                 {/* create event */}
               <UserButton />
-            </SignedIn> 
+            </Authenticated> 
             
-                 <SignedOut>
+                 <Unauthenticated>
               <SignInButton mode='modal'>
                 <Button size='sm'>Sign In</Button>
               </SignInButton>
               
-            </SignedOut>
+            </Unauthenticated>
 
             </div>
         </div>
