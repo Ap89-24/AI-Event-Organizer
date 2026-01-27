@@ -17,7 +17,7 @@ export default defineSchema({
             hasCompletedOnboarding: v.boolean(),
 
             //Location fields
-            location: v.string(
+            location: v.optional(
                 v.object({
                     city: v.string(),
                     state: v.optional(v.string()),
