@@ -79,7 +79,7 @@ export default defineSchema({
       .index("by_category", ["category"])
       .index("by_start_date" , ["startDate"])
       .index("by_slug", ["slug"])
-      .searchIndex("search_tittle" , {searchField: "'title'"}),
+      .searchIndex("search_tittle" , {searchField: "title"}),
 
     //Registrations Table...
     registrations: defineTable({
