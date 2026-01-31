@@ -70,7 +70,7 @@ export default defineSchema({
 
         //Customization...
         coverImage: v.optional(v.string()),
-        themeImage: v.optional(v.string()),
+        themeColor: v.optional(v.string()),
 
         //Timestamps
         createdAt: v.number(),
