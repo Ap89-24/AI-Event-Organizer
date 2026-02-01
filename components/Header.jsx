@@ -58,7 +58,7 @@ const Header = () => {
                   labelIcon={<Building size={16} />}
                   href='/my-events'
                   />
-                  <UserButton.Action label='manageaccount' />
+                  <UserButton.Action label='manage account'/>
                 </UserButton.MenuItems>
               </UserButton>
             </Authenticated> 
