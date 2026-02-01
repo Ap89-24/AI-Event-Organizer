@@ -3,7 +3,7 @@ import { query } from "./_generated/server";
 
 
 
-
+//Get featured events (by registration count)...
 
 export const getFeaturedEvents = query({
     args: {

@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark, neobrutalism, shadesOfPurple } from "@clerk/themes";
+import { Toaster } from "@/components/ui/sonner";
 
 
 
@@ -50,6 +51,7 @@ export default function RootLayout({ children }) {
             All Rights Reserved &copy; Evenza 2026
           </div>
         </footer>
+        <Toaster richColors />
         </main>
 
         </ConvexClientProvider>
