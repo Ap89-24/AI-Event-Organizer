@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const ExplorePage = () => {
   //Fetch current user for location...
@@ -22,7 +23,7 @@ const ExplorePage = () => {
     api.event.getFeaturedEvents,
     { limit: 3 },
   );
-  console.log("Featured Events:", featuredEvents);
+
 
   const { data: localEvents, isLoading: localLoading } = useConvexQuery(
     api.event.getFeaturedEvents,
@@ -57,23 +58,21 @@ const ExplorePage = () => {
       {featuredEvents && featuredEvents.length > 0 && (
         <div className="mb-16">
           <Carousel className={'w-full'} plugins={[plugin.current]}
-          onmouseenter={plugin.current.stop}
-          onmouseleave={plugin.current.reset}
+          onMouseEnter={plugin.current.stop}
+          onMouseLeave={plugin.current.reset}
           >
             <CarouselContent>
-              {featuredEvents.map((index) => {
-                <CarouselItem key={index._id}>
+              {featuredEvents.map((event) => (
+                <CarouselItem key={event._id}>
                     <div
-                    onClick={handleEventClick}
+                    onClick={() => handleEventClick(event.slug)}
                     className="relative h-[400px] rounded-xl overflow-hidden cursor-pointer"
                     >
-
+                     {event.coverImage ? (<Image src={event.coverImage} alt={event.title} fill className="object-cover" priority/> ): (<div className="absolute inset-0" style={{backgroundColor: event.themeColor}}/>)}
                     </div>
                 </CarouselItem>
 
-              })}
-              <CarouselItem>...</CarouselItem>
-              <CarouselItem>...</CarouselItem>
+              ))}
             </CarouselContent>
             <CarouselPrevious />
             <CarouselNext />
