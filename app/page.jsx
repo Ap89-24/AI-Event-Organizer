@@ -125,7 +125,7 @@ export default function Home() {
             </p>
 
             <Link href={'/explore'}>
-            <Button size="xl" className={'button rounded-full'}>
+            <Button size="xl" variant="shadow" className='rounded-full cursor-pointer'>
               Get Started
             </Button>
             </Link>

@@ -44,6 +44,7 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noEmit": true,
     "incremental": true,
@@ -55,6 +56,9 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
 
+    "paths": {
+      "@/*": ["./*"]
+    },
 
     "plugins": [
       { "name": "next" }

@@ -17,6 +17,7 @@ import { ArrowRight, Calendar, Loader, Loader2, MapPin, Users } from "lucide-rea
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { createLocationSlug } from "@/lib/location-util";
+import EventCard from "@/components/EventCard";
 
 const ExplorePage = () => {
   //Fetch current user for location...
@@ -159,6 +160,17 @@ const ExplorePage = () => {
              >
                View All  <ArrowRight className="w-4 h-4"/>
              </Button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {localEvents.map((event) => {
+              <EventCard
+              key={event._id}
+              event={event}
+              variant="list"
+              onClick={() => handleEventClick(event.slug)}
+              />
+            })}
           </div>
         </div>
       )}
