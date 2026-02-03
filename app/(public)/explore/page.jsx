@@ -22,15 +22,17 @@ const ExplorePage = () => {
   const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: true }));
   const router = useRouter();
 
-  const { data: featuredEvents, isLoading: featuredLoading } = useConvexQuery(
+  const { data: featuredEvents, isLoading: loadingFeatured } = useConvexQuery(
     api.event.getFeaturedEvents,
     { limit: 3 },
   );
 
 
-  const { data: localEvents, isLoading: localLoading } = useConvexQuery(
-    api.event.getFeaturedEvents,
+  const { data: localEvents, isLoading: loadingLocal } = useConvexQuery(
+    api.event.getEventsByLocation,
     {
+      city: currentUser?.location?.city,
+      state: currentUser?.location?.state,
       limit: 4,
     },
   );
@@ -120,6 +122,11 @@ const ExplorePage = () => {
       )}
 
       {/* Local events */}
+      {localEvents && localEvents.length > 0 && (
+        <div>
+          
+        </div>
+      )}
 
       {/* Browse events by category */}
 
