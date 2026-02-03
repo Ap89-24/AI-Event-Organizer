@@ -21,7 +21,7 @@ export default defineSchema({
                 v.object({
                     city: v.string(),
                     state: v.optional(v.string()),
-                    country: v.string(),
+                    country: v.optional(v.string()),
                 })
             ),
 

@@ -34,6 +34,7 @@ export const getEventsByLocation = query({
     args: {
         city: v.optional(v.string()),
         state: v.optional(v.string()),
+        country: v.optional(v.string()),
         limit: v.optional(v.number()),
     },
     handler: async (ctx,args) => {

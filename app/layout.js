@@ -4,7 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import { ClerkProvider } from "@clerk/nextjs";
-import { dark, neobrutalism, shadesOfPurple } from "@clerk/themes";
+import {  shadesOfPurple } from "@clerk/themes";
 import { Toaster } from "@/components/ui/sonner";
 
 
@@ -32,7 +32,7 @@ export default function RootLayout({ children }) {
             <ConvexClientProvider>
         {/* {Header} */}
 
-           <Header />
+           <Header/>
 
         <main className="relative min-h-screen container mx-auto pt-40 md:pt-32">
           {/* {glow} */}

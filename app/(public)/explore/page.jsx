@@ -13,8 +13,10 @@ import Autoplay from "embla-carousel-autoplay";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Users } from "lucide-react";
+import { ArrowRight, Calendar, Loader, Loader2, MapPin, Users } from "lucide-react";
 import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
+import { createLocationSlug } from "@/lib/location-util";
 
 const ExplorePage = () => {
   //Fetch current user for location...
@@ -46,6 +48,24 @@ const ExplorePage = () => {
 
   const handleEventClick = (slug) => {
     router.push(`/event/${slug}`);
+  }
+
+  const handleViewLocalEvents = () => {
+     const city = currentUser?.location?.city;
+     const state = currentUser?.location?.state;
+
+     const slug = createLocationSlug(city, state);
+     router.push(`/explore/${slug}`);
+  }
+
+  //Loading state....
+  const isLoading = loadingFeatured || loadingLocal || popularLoading;
+  if(isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+          <Loader2 className="w-10 h-10 animate-spin text-purple-500" />
+      </div>
+    )
   }
 
   return (
@@ -123,8 +143,23 @@ const ExplorePage = () => {
 
       {/* Local events */}
       {localEvents && localEvents.length > 0 && (
-        <div>
-          
+        <div className="mb-16">
+          <div className="flex items-center justify-between mb-6">
+             <div>
+              <h2 className="text-4xl font-bold mb-2">Events Near You</h2>
+              <p className="text-muted-foreground">
+                 Happening in {currentUser?.location?.city || "Your City"}
+              </p>
+             </div>
+
+             <Button
+             variant="outline"
+             className={'gap-2'}
+             onClick={handleViewLocalEvents}
+             >
+               View All  <ArrowRight className="w-4 h-4"/>
+             </Button>
+          </div>
         </div>
       )}
 

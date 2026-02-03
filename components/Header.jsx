@@ -58,7 +58,7 @@ const Header = () => {
                   labelIcon={<Building size={16} />}
                   href='/my-events'
                   />
-                  <UserButton.Action label='Manage-Account' onClick={() => setShowUpgradeModal(true)}/>
+                  <UserButton.Action label='Manage-Account'/>
                 </UserButton.MenuItems>
               </UserButton>
             </Authenticated> 
