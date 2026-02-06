@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { getCategoryIcon } from '@/lib/data'
 import { format } from 'date-fns'
 import { MapPin, Users } from 'lucide-react'
+import { Badge } from './ui/badge'
 
 const EventCard = ({
     event,
@@ -58,9 +59,36 @@ const EventCard = ({
     }
 
   return (
-    <div>
-      EventCard
-    </div>
+    <Card
+            className={`overflow-hidden group pt-0 ${onClick ? "cursor-pointer hover:shadow-lg transition-all hover:border-purple-500/50" : ""} ${className}`}
+            onClick={onClick}
+            >
+
+            <div className='relative h-48 overflow-hidden'>
+                         {event.coverImage ? (
+                            <Image 
+                            src={event.coverImage} 
+                            alt={event.title} 
+                            fill 
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform" 
+                            priority/> 
+                         ) : (
+                            <div className="w-full h-full flex items-center justify-center text-5xl" 
+                            style={{backgroundColor: event.themeColor}}>
+                            {getCategoryIcon(event.category)}
+                         </div>
+                        )}
+                        <div className='absolute top-3 right-3'>
+                          <Badge variant="secondary">
+                            {event.ticketType === "free" ? "Free" : "Paid"}
+                          </Badge>
+                        </div>
+                     </div>
+
+                <CardContent className='space-y-3'>
+                      
+                </CardContent>
+            </Card>
   )
 }
 

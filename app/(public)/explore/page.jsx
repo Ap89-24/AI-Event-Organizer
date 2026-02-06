@@ -170,7 +170,7 @@ const ExplorePage = () => {
               <EventCard
               key={event._id}
               event={event}
-              variant="list"
+              variant="grid"
               onClick={() => handleEventClick(event.slug)}
               />
             })}
