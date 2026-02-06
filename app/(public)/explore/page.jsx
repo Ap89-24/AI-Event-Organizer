@@ -21,9 +21,11 @@ import EventCard from "@/components/EventCard";
 
 const ExplorePage = () => {
   //Fetch current user for location...
-  const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
-  const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: true }));
+  const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
+
   const router = useRouter();
+
+  const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
 
   const { data: featuredEvents, isLoading: loadingFeatured } = useConvexQuery(
     api.event.getFeaturedEvents,
@@ -66,7 +68,7 @@ const ExplorePage = () => {
       <div className="min-h-screen flex items-center justify-center">
           <Loader2 className="w-10 h-10 animate-spin text-purple-500" />
       </div>
-    )
+    );
   }
 
   return (
@@ -83,7 +85,8 @@ const ExplorePage = () => {
 
       {featuredEvents && featuredEvents.length > 0 && (
         <div className="mb-16">
-          <Carousel className={'w-full'} plugins={[plugin.current]}
+          <Carousel plugins={[plugin.current]}
+          className={'w-full'}
           onMouseEnter={plugin.current.stop}
           onMouseLeave={plugin.current.reset}
           >

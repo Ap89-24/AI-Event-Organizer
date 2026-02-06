@@ -20,8 +20,8 @@ export const getFeaturedEvents = query({
 
         //Sort by registration count on featured events
         const featured = events
-        .sort((a,b) => b.registeredCount - a.registeredCount)
-        .slice(0,args.limit ?? 3);
+        .sort((a,b) => b.registrationCount - a.registrationCount)
+        .slice(0,args.limit ?? 5);
 
         return featured;
     },
@@ -55,7 +55,7 @@ export const getEventsByLocation = query({
 
         else if(args.state){
             const events = events.filter(
-                (e) => e.state.toLowerCase() === args.state.toLowerCase()
+                (e) => e.state?.toLowerCase() === args.state.toLowerCase()
             )
         }
      
@@ -81,7 +81,7 @@ export const getPopularEvents = query({
 
         //Sort by registration count on featured events
         const popular = events
-        .sort((a,b) => b.registeredCount - a.registeredCount)
+        .sort((a,b) => b.registrationCount - a.registrationCount)
         .slice(0,args.limit ?? 6);
 
         return popular;
