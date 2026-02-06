@@ -1,9 +1,9 @@
 import React from 'react'
 import { Card, CardContent } from './ui/card'
 import Image from 'next/image'
-import { getCategoryIcon } from '@/lib/data'
+import { getCategoryIcon, getCategoryLabel } from '@/lib/data'
 import { format } from 'date-fns'
-import { MapPin, Users } from 'lucide-react'
+import { Calendar, MapPin, Users } from 'lucide-react'
 import { Badge } from './ui/badge'
 
 const EventCard = ({
@@ -86,7 +86,35 @@ const EventCard = ({
                      </div>
 
                 <CardContent className='space-y-3'>
-                      
+                  <div>
+                    <Badge variant="outline" className='mb-2'>
+                        {getCategoryIcon(event.category)}  {getCategoryLabel(event.category)}
+                    </Badge>
+                    <h3 className="font-semibold text-lg line-clamp-2 group-hover:text-purple-400 transition-colors">
+                        {event.title}
+                    </h3>
+                    </div>    
+
+                    <div className="space-x-2 text-sm text-muted-foreground">
+                         <div className="flex items-center gap-2">
+                               <Calendar className="w-5 h-5" />
+                               <span className="text-sm">
+                                {format(event.startDate , "PPP")}
+                               </span>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                 <MapPin className="w-5 h-5" />
+                                 <span className="text-sm">
+                                    {event.locationType ==="online" ? "Online Event" : `${event.city}, ${event.state || event.country}`}
+                                 </span>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                  <Users className="w-5 h-5" />
+                                  <span className="text-sm">{event.registrationCount} / {event.capacity} registered</span>
+                           </div>
+                    </div>
                 </CardContent>
             </Card>
   )
