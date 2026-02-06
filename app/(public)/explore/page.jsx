@@ -180,6 +180,8 @@ const ExplorePage = () => {
 
       {/* Browse events by category */}
 
+      
+
       {/* Popular events across country */}
 
       {/* Empty state for no events */}

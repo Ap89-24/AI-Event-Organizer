@@ -3,8 +3,9 @@ import { Card, CardContent } from './ui/card'
 import Image from 'next/image'
 import { getCategoryIcon, getCategoryLabel } from '@/lib/data'
 import { format } from 'date-fns'
-import { Calendar, MapPin, Users } from 'lucide-react'
+import { Calendar, MapPin, Trash2, Users } from 'lucide-react'
 import { Badge } from './ui/badge'
+import { Button } from './ui/button'
 
 const EventCard = ({
     event,
@@ -115,6 +116,36 @@ const EventCard = ({
                                   <span className="text-sm">{event.registrationCount} / {event.capacity} registered</span>
                            </div>
                     </div>
+
+                    {showActions && (
+                        <div>
+                            <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex-1"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onclick?.(e);
+                            }}
+                            >
+                             View
+                            </Button>
+
+                            {onDelete && (
+                                <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onDelete(event._id);
+                                }}
+                                className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                >
+                                <Trash2 className='w-4 h-4'/>
+                                </Button>
+                            )}
+                        </div>
+                    )}
                 </CardContent>
             </Card>
   )
