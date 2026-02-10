@@ -198,6 +198,7 @@ const ExplorePage = () => {
 
        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {categoryWithCounts.map((category) => {
+            return(
             <Card
             key={category.id}
             className="py-2 group cursor-pointer hover:shadow-lg transition-all hover:border-purple-500/50"
@@ -216,7 +217,7 @@ const ExplorePage = () => {
               </div>
             </CardContent>
             </Card>
-          })}
+          )})}
        </div>
 
       </div>
