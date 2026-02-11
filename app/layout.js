@@ -1,13 +1,10 @@
-
 import Header from "@/components/Header";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeProvider } from "@/components/theme-provider";
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import { ClerkProvider } from "@clerk/nextjs";
-import {  shadesOfPurple } from "@clerk/themes";
+import { shadesOfPurple } from "@clerk/themes";
 import { Toaster } from "@/components/ui/sonner";
-
-
 
 export const metadata = {
   title: "AI-Events-Organizer",
@@ -17,47 +14,49 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning className={`bg-linear-to-br from-gray-950 via-zinc-900 to-stone-900 text-white`}>
-         <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
+      <body
+        suppressHydrationWarning
+        className={`bg-linear-to-br from-gray-950 via-zinc-900 to-stone-900 text-white`}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ClerkProvider
+            appearance={{
+              theme: shadesOfPurple,
+            }}
           >
-             <ClerkProvider 
-             appearance={{
-                     theme: shadesOfPurple,
-                         }}
-             >
             <ConvexClientProvider>
-        {/* {Header} */}
+              {/* {Header} */}
 
-           <Header/>
+              <Header />
 
-        <main className="relative min-h-screen container mx-auto pt-40 md:pt-32">
-          {/* {glow} */}
-          <div className="pointer-events-none">
-             <div className="absolute top-1.5 left-1/4 h-80 w-80 bg-pink-600/40 rounded-full blur-3xl"></div>
-             <div className="absolute bottom-1.5 right-1/4 h-80 w-80 bg-stone-200/30 rounded-full blur-3xl"></div>
-          </div>
+              <main className="relative min-h-screen container mx-auto pt-40 md:pt-32">
+                {/* {glow} */}
+                <div className="pointer-events-none">
+                  <div className="absolute top-1.5 left-1/4 h-80 w-80 bg-pink-600/40 rounded-full blur-3xl"></div>
+                  <div className="absolute bottom-1.5 right-1/4 h-80 w-80 bg-stone-200/30 rounded-full blur-3xl"></div>
+                </div>
 
-          <div className="relative z-10 min-h-[70vh]">
-        {children}
-          </div>
+                <div className="relative z-10 min-h-[70vh]">{children}</div>
 
-        {/* {footer} */}
-        <footer className="border-t border-gray-600/50 max-w-7xl py-8 px-6 mx-auto">
-          <div className="text-sm text-gray-400">
-            All Rights Reserved &copy; Evenza 2026
-          </div>
-        </footer>
-        <Toaster richColors />
-        </main>
+                {/* {footer} */}
+                <footer className="border-t border-gray-600/50 max-w-7xl py-8 px-6 mx-auto overflow-hidden">
+                  <div className="relative z-10 text-sm text-gray-400 mx-auto">
+                    All Rights Reserved &copy; Evenza 2026
+                  </div>
+                  {/* Big Background Text */}
+               
 
-        </ConvexClientProvider>
-        </ClerkProvider>
+                </footer>
+                <Toaster richColors />
+              </main>
+            </ConvexClientProvider>
+          </ClerkProvider>
         </ThemeProvider>
-
       </body>
     </html>
   );
