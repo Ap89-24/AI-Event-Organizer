@@ -76,6 +76,7 @@ const ExplorePage = () => {
 
   //Loading state....
   const isLoading = loadingFeatured || loadingLocal || popularLoading;
+  
   if(isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
