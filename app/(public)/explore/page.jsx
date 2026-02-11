@@ -180,13 +180,14 @@ const ExplorePage = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {localEvents.map((event) => {
+              return(
               <EventCard
               key={event._id}
               event={event}
               variant="grid"
               onClick={() => handleEventClick(event.slug)}
               />
-            })}
+            )})}
           </div>
         </div>
       )}
@@ -224,7 +225,48 @@ const ExplorePage = () => {
 
       {/* Popular events across country */}
 
+      {popularEvents && popularEvents.length > 0 &&(
+      <div className="mb-16">
+        <h2 className="text-3xl font-bold mb-2">Popular events across India</h2>
+        <p className="text-muted-foreground mb-3">Trending events Nationwide</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {popularEvents.map((event) => {
+            return (
+              <EventCard
+              key={event._id}
+              event={event}
+              variant="list"
+              onClick={() => handleEventClick(event.slug)}
+              />
+            )
+          })}
+        </div>
+
+      </div>
+       
+      )}
       {/* Empty state for no events */}
+
+      {!loadingFeatured &&
+      !loadingLocal &&
+      !popularLoading &&
+      (!featuredEvents || featuredEvents.length === 0) && 
+      (!localEvents || localEvents.length === 0) && 
+      (!popularEvents || popularEvents.length === 0) && (
+        <Card className="p-12 text-center">
+          <div className="max-w-md mx-auto space-y-5">
+            <div className="text-7xl mb-5">🎉</div>
+            <h2 className="text-3xl font-bold">No events yet</h2>
+            <p className="text-muted-foreground">
+              Be the first to create an event in your city and get the word out! With no events currently listed, it&apos;s a great opportunity to start something amazing. Whether it&apos;s a small meetup or a large festival, your event could be the next big thing in town. Don&apos;t wait for others to take the lead - create your event today and bring people together!
+            </p>
+            <Button asChild className="gap-2">
+               <a href="/create-event">Create Event</a>
+            </Button>
+          </div>
+        </Card>
+      )}
     </>
   );
 };
