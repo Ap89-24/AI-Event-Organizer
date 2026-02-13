@@ -40,7 +40,7 @@ export const getEventsByLocation = query({
     handler: async (ctx,args) => {
         const now = Date.now();
 
-        const events = await ctx.db.query("events")
+        let events = await ctx.db.query("events")
         .withIndex("by_start_date")
         .filter((q) => q.gte(q.field("startDate"),now))
         .collect();
@@ -48,13 +48,13 @@ export const getEventsByLocation = query({
         //Filter by city or state....
 
         if(args.city){
-            const events = events.filter(
+             events = events.filter(
                 (e) => e.city.toLowerCase() === args.city.toLowerCase()
             )
         }
 
         else if(args.state){
-            const events = events.filter(
+             events = events.filter(
                 (e) => e.state?.toLowerCase() === args.state.toLowerCase()
             )
         }

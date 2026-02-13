@@ -59,11 +59,11 @@ const ExplorePage = () => {
   })
 
   const handleEventClick = (slug) => {
-    router.push(`/event/${slug}`);
+    router.push(`/events/${slug}`);
   }
 
   const handleCategoryClick = (categoryid) => {
-    router.push(`/event/${categoryid}`);
+    router.push(`/explore/${categoryid}`);
   }
 
   const handleViewLocalEvents = () => {
