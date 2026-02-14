@@ -8,6 +8,7 @@ import {Authenticated , Unauthenticated} from "convex/react"
 import {BarLoader} from "react-spinners"
 import { useStoreUserEffect } from '@/hooks/useStoreUserEffect';
 import { Building, Plus, Ticket } from 'lucide-react';
+import { OnBoardingModal } from './OnBoardingModal';
 
 const Header = () => {
 
@@ -71,6 +72,7 @@ const Header = () => {
             </Unauthenticated>
 
             </div>
+            <OnBoardingModal />
         </div>
         {/* search and location for mobile only */}
 
