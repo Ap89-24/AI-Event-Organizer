@@ -9,11 +9,14 @@ import {BarLoader} from "react-spinners"
 import { useStoreUserEffect } from '@/hooks/useStoreUserEffect';
 import { Building, Plus, Ticket } from 'lucide-react';
 import { OnBoardingModal } from './OnBoardingModal';
+import { useOnboarding } from '@/hooks/use-onboarding';
 
 const Header = () => {
 
   const {isLoading} = useStoreUserEffect();
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+  const {showOnboarding,handleOnboardingComplete,handleOnboardingSkip} = useOnboarding();
 
   return (
     <>
@@ -72,7 +75,7 @@ const Header = () => {
             </Unauthenticated>
 
             </div>
-            <OnBoardingModal />
+          
         </div>
         {/* search and location for mobile only */}
 
@@ -84,6 +87,11 @@ const Header = () => {
       </nav>
 
       {/* Modals */}
+        <OnBoardingModal
+        isOpen={showOnboarding}
+        onClose={handleOnboardingSkip}
+        onComplete={handleOnboardingComplete}
+        />
     </>
   )
 }

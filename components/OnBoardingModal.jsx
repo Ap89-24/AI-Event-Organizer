@@ -1,3 +1,4 @@
+"use client"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -16,18 +17,14 @@ import { useState } from "react"
 import { Progress } from "./ui/progress"
 import { Heart, MapPin } from "lucide-react"
 
-export function OnBoardingModal() {
+export function OnBoardingModal({isOpen,onClose,onComplete}) {
 
   const [step , setStep] = useState(1);
   const progress = (step/2) * 100;
 
   return (
-    <Dialog>
-      <form>
-        <DialogTrigger asChild>
-          <Button variant="outline">Open Dialog</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-sm">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
             <div className="mb-4">
               <Progress value={progress} className="h-1" />
@@ -52,16 +49,9 @@ export function OnBoardingModal() {
               }
             </DialogDescription>
           </DialogHeader>
-          <FieldGroup>
-            <Field>
-              <Label htmlFor="name-1">Name</Label>
-              <Input id="name-1" name="name" defaultValue="Pedro Duarte" />
-            </Field>
-            <Field>
-              <Label htmlFor="username-1">Username</Label>
-              <Input id="username-1" name="username" defaultValue="@peduarte" />
-            </Field>
-          </FieldGroup>
+          <div className="py-4">
+            {``}
+            </div>            
           <DialogFooter>
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
@@ -69,7 +59,7 @@ export function OnBoardingModal() {
             <Button type="submit">Save changes</Button>
           </DialogFooter>
         </DialogContent>
-      </form>
+     
     </Dialog>
   )
 }
