@@ -16,11 +16,16 @@ import { Label } from "@/components/ui/label"
 import { useState } from "react"
 import { Progress } from "./ui/progress"
 import { Heart, MapPin } from "lucide-react"
+import { CATEGORIES } from "@/lib/data"
 
 export function OnBoardingModal({isOpen,onClose,onComplete}) {
 
   const [step , setStep] = useState(1);
   const progress = (step/2) * 100;
+  
+  const toggleInterest = (categoryid) => {
+
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -50,7 +55,21 @@ export function OnBoardingModal({isOpen,onClose,onComplete}) {
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
-            {``}
+            {step === 1 && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[400px] overflow-y-auto p-3">
+                    {CATEGORIES.map((category) => (
+                      <button key={category.id}
+                      onClick={() => toggleInterest(category.id)}
+                      className="p-4 rounded-lg border-2 transition-all hover:scale-110"
+                      >
+                        <div className="text-2xl mb-2.5">{category.icon}</div>
+                        <div className="text-sm font-medium">{category.label}</div>
+                      </button>
+                    ))}
+                </div>
+              </div>
+            )}
             </div>            
           <DialogFooter>
             <DialogClose asChild>
