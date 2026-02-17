@@ -13,9 +13,9 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Progress } from "./ui/progress";
-import { ArrowRight, Heart, MapPin } from "lucide-react";
+import { ArrowLeft, ArrowRight, Heart, MapPin } from "lucide-react";
 import { CATEGORIES } from "@/lib/data";
 import { Badge } from "./ui/badge";
 import { useConvexMutation } from "@/hooks/use-convex-query";
@@ -40,12 +40,12 @@ export function OnBoardingModal({ isOpen, onClose, onComplete }) {
 
   const IndianStates = State.getStatesOfCountry("IN");
 
-  const cities = () => {
+  const cities = useMemo(() => {
     if (!location.state) return [];
     const selectedStates = IndianStates.find((s) => s.name === location.state);
     if (!selectedStates) return [];
     return City.getCitiesOfState("IN", selectedStates.isoCode);
-  };
+  },[location.state,IndianStates]);
 
   const toggleInterest = (categoryid) => {
     setSelectedInterest((prev) =>
@@ -136,7 +136,7 @@ export function OnBoardingModal({ isOpen, onClose, onComplete }) {
           {step === 2 && (
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="state">State</Label>
                   <Select value={location.state}
                   onValueChange={(value) => {
@@ -155,11 +155,62 @@ export function OnBoardingModal({ isOpen, onClose, onComplete }) {
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
+                
+               <div className="space-y-2">
+                  <Label htmlFor="state">Cities</Label>
+                  <Select value={location.city}
+                  onValueChange={(value) =>  setLocation({...location,  city: value})
+                }
+                disabled={!location.state}
+                  >
+                    <SelectTrigger id="city" className="h-11 w-full">
+                      <SelectValue placeholder={location.state ? "Select City" : "Select State first"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                     {cities.length > 0  ? (
+                        cities.map((city) => (
+                          <SelectItem key={city.name} value={city.name}>
+                              {city.name}
+                          </SelectItem>
+                        ))
+                     ) : (
+                      <SelectItem value="no-cities" disabled>
+                         No cities available
+                      </SelectItem>
+                     )}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                </div>
+
+            {location.city && location.state && (
+                <div className="p-4 bg-purple-500/10 border border-purple-500/20 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <MapPin className="w-5 h-5 text-purple-500 mt-0.5" />
+                    <div>
+                      <p className="font-medium">Your location</p>
+                      <p className="text-sm text-muted-foreground">
+                        {location.city}, {location.state}, {location.country}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
         <DialogFooter className={`flex gap-3.5`}>
+          {step > 1 && (
+            <Button
+            variant="outline"
+            onClick={() => setStep(step - 1)}
+            className="gap-2.5"
+            >
+              <ArrowLeft className="w-6 h-6" />
+              Back
+            </Button>
+          )}
           <Button
             className={`flex-1 gap-2`}
             disabled={isLoading}
