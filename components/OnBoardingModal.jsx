@@ -55,7 +55,6 @@ export function OnBoardingModal({ isOpen, onClose, onComplete }) {
     );
   };
 
-  const handleComplete = async () => {};
 
   const handleNext = () => {
     if (step === 1 && selectedInterest.length < 3) {
@@ -69,8 +68,26 @@ export function OnBoardingModal({ isOpen, onClose, onComplete }) {
     if (step < 2) {
       setStep(step + 1);
     } else {
-      P;
       handleComplete();
+    }
+  };
+
+   const handleComplete = async () => {
+    try {
+      await completeOnboarding({
+        location: {
+          city: location.city,
+          state: location.state,
+          country: location.country,
+        },
+        interests: selectedInterest,
+      });
+
+      toast.success("Welcome to Evenza – Every Event, One Platform. 🚀🎉");
+      onComplete();
+    } catch (error) {
+      toast.error("Failed to complete onboarding. Please try again. 🔄⚠️")
+      console.error(error);
     }
   };
 
