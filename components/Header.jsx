@@ -10,6 +10,7 @@ import { useStoreUserEffect } from '@/hooks/useStoreUserEffect';
 import { Building, Plus, Ticket } from 'lucide-react';
 import { OnBoardingModal } from './OnBoardingModal';
 import { useOnboarding } from '@/hooks/use-onboarding';
+import SearchLocationBar from './SearchLocationBar';
 
 const Header = () => {
 
@@ -35,6 +36,10 @@ const Header = () => {
             </Link>
 
             {/* {search bar and location for desktop} */}
+
+            <div className="hidden md:flex flex-1 justify-center">
+                  <SearchLocationBar />
+            </div>
 
             {/* {right side section} */}
             <div className='flex items-center'>
@@ -77,7 +82,12 @@ const Header = () => {
             </div>
           
         </div>
+
         {/* search and location for mobile only */}
+
+           <div className="md:hidden border-t px-3 py-3">
+                  <SearchLocationBar />
+            </div>
 
         {/* Loader */}
        { isLoading && <div className='absolute bottom-0 left-0 w-full'>
