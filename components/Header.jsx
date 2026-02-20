@@ -26,11 +26,11 @@ const Header = () => {
             {/* {logo} */}
             <Link href="/" className="flex items-center">
             <Image
-             src="/logo2.png"
+             src="/logo6.png"
              alt="Evenza Logo"
              width={250}
              height={200}
-             className="h-20 w-auto md:h-20 transition-all duration-300 hover:scale-110"
+             className="h-13 w-auto md:h-20 transition-all duration-300 hover:scale-110 rounded-2xl"
              />
            </Link>
 
