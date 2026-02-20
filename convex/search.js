@@ -10,7 +10,7 @@ export const searchEvents = query({
     },
 
     handler: async (ctx , args) => {
-        if(!args.query || args.query.trim() < 2){
+        if(!args.query || args.query.trim().length < 2){
             return [];
         }
 

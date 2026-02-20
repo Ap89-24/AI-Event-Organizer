@@ -22,7 +22,15 @@ import { useConvexMutation } from "@/hooks/use-convex-query";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { City, State } from "country-state-city";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 export function OnBoardingModal({ isOpen, onClose, onComplete }) {
   const [step, setStep] = useState(1);
@@ -45,7 +53,7 @@ export function OnBoardingModal({ isOpen, onClose, onComplete }) {
     const selectedStates = IndianStates.find((s) => s.name === location.state);
     if (!selectedStates) return [];
     return City.getCitiesOfState("IN", selectedStates.isoCode);
-  },[location.state,IndianStates]);
+  }, [location.state, IndianStates]);
 
   const toggleInterest = (categoryid) => {
     setSelectedInterest((prev) =>
@@ -54,7 +62,6 @@ export function OnBoardingModal({ isOpen, onClose, onComplete }) {
         : [...prev, categoryid],
     );
   };
-
 
   const handleNext = () => {
     if (step === 1 && selectedInterest.length < 3) {
@@ -72,7 +79,7 @@ export function OnBoardingModal({ isOpen, onClose, onComplete }) {
     }
   };
 
-   const handleComplete = async () => {
+  const handleComplete = async () => {
     try {
       await completeOnboarding({
         location: {
@@ -86,7 +93,7 @@ export function OnBoardingModal({ isOpen, onClose, onComplete }) {
       toast.success("Welcome to Evenza – Every Event, One Platform. 🚀🎉");
       onComplete();
     } catch (error) {
-      toast.error("Failed to complete onboarding. Please try again. 🔄⚠️")
+      toast.error("Failed to complete onboarding. Please try again. 🔄⚠️");
       console.error(error);
     }
   };
@@ -155,53 +162,59 @@ export function OnBoardingModal({ isOpen, onClose, onComplete }) {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="state">State</Label>
-                  <Select value={location.state}
-                  onValueChange={(value) => {
-                    setLocation({...location, state: value , city:""});
-                  }}
+                  <Select
+                    value={location.state}
+                    onValueChange={(value) => {
+                      setLocation({ ...location, state: value, city: "" });
+                    }}
                   >
                     <SelectTrigger id="state" className="h-11 w-full">
                       <SelectValue placeholder="Select a State" />
                     </SelectTrigger>
                     <SelectContent>
-                       {IndianStates.map((state) => (
+                      {IndianStates.map((state) => (
                         <SelectItem key={state.isoCode} value={state.name}>
-                            {state.name}
+                          {state.name}
                         </SelectItem>
-                       ))}
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
-                
-               <div className="space-y-2">
+
+                <div className="space-y-2">
                   <Label htmlFor="state">Cities</Label>
-                  <Select value={location.city}
-                  onValueChange={(value) =>  setLocation({...location,  city: value})
-                }
-                disabled={!location.state}
+                  <Select
+                    value={location.city}
+                    onValueChange={(value) =>
+                      setLocation({ ...location, city: value })
+                    }
+                    disabled={!location.state}
                   >
                     <SelectTrigger id="city" className="h-11 w-full">
-                      <SelectValue placeholder={location.state ? "Select City" : "Select State first"} />
+                      <SelectValue
+                        placeholder={
+                          location.state ? "Select City" : "Select State first"
+                        }
+                      />
                     </SelectTrigger>
                     <SelectContent>
-                     {cities.length > 0  ? (
+                      {cities.length > 0 ? (
                         cities.map((city) => (
                           <SelectItem key={city.name} value={city.name}>
-                              {city.name}
+                            {city.name}
                           </SelectItem>
                         ))
-                     ) : (
-                      <SelectItem value="no-cities" disabled>
-                         No cities available
-                      </SelectItem>
-                     )}
+                      ) : (
+                        <SelectItem value="no-cities" disabled>
+                          No cities available
+                        </SelectItem>
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
 
-                </div>
-
-            {location.city && location.state && (
+              {location.city && location.state && (
                 <div className="p-4 bg-purple-500/10 border border-purple-500/20 rounded-lg">
                   <div className="flex items-start gap-3">
                     <MapPin className="w-5 h-5 text-purple-500 mt-0.5" />
@@ -220,9 +233,9 @@ export function OnBoardingModal({ isOpen, onClose, onComplete }) {
         <DialogFooter className={`flex gap-3.5`}>
           {step > 1 && (
             <Button
-            variant="outline"
-            onClick={() => setStep(step - 1)}
-            className="gap-2.5"
+              variant="outline"
+              onClick={() => setStep(step - 1)}
+              className="gap-2.5"
             >
               <ArrowLeft className="w-6 h-6" />
               Back
