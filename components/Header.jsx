@@ -24,16 +24,15 @@ const Header = () => {
       <nav className='fixed top-0 left-0 right-0 bg-background/80 backdrop-blur-3xl z-20 border-b'>
         <div className='max-w-7xl mx-auto px-6 py-4 flex items-center justify-between'>
             {/* {logo} */}
-            <Link href={"/"} className='flex items-center'>
+            <Link href="/" className="flex items-center">
             <Image
-            src="/logo.png"
-            alt='logo-png'
-            height={500}
-            width={500}
-            className="w-full h-11 rounded-2xl shadow-xl"
-            priority
-            />
-            </Link>
+             src="/logo2.png"
+             alt="Evenza Logo"
+             width={250}
+             height={200}
+             className="h-20 w-auto md:h-20 transition-all duration-300 hover:scale-110"
+             />
+           </Link>
 
             {/* {search bar and location for desktop} */}
 
