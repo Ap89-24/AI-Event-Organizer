@@ -1,5 +1,5 @@
 "use client";
-import {  SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
+import {  SignInButton, SignUpButton, useAuth, UserButton } from '@clerk/nextjs'
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useState } from 'react'
@@ -7,10 +7,12 @@ import { Button } from './ui/button'
 import {Authenticated , Unauthenticated} from "convex/react"
 import {BarLoader} from "react-spinners"
 import { useStoreUserEffect } from '@/hooks/useStoreUserEffect';
-import { Building, Plus, Ticket } from 'lucide-react';
+import { Building, Crown, Plus, Ticket } from 'lucide-react';
 import { OnBoardingModal } from './OnBoardingModal';
 import { useOnboarding } from '@/hooks/use-onboarding';
 import SearchLocationBar from './SearchLocationBar';
+import { has } from 'lodash';
+import { Badge } from './ui/badge';
 
 const Header = () => {
 
@@ -19,6 +21,8 @@ const Header = () => {
 
   const {showOnboarding,handleOnboardingComplete,handleOnboardingSkip} = useOnboarding();
 
+  const  auth = useAuth();
+  const hasPro  = has?.({plan: "Pro"})
   return (
     <>
       <nav className='fixed top-0 left-0 right-0 bg-background/80 backdrop-blur-3xl z-20 border-b'>
@@ -32,6 +36,15 @@ const Header = () => {
              height={200}
              className="h-13 w-auto md:h-20 transition-all duration-300 hover:scale-110 rounded-2xl"
              />
+
+           {/* Pro badge */}
+
+           {hasPro && (
+             <Badge className="bg-linear-to-r from-pink-500 to-orange-500 gap-1 text-white ml-1">
+                <Crown className="w-5 h-5" />
+                Pro
+            </Badge>
+           )}
            </Link>
 
             {/* {search bar and location for desktop} */}
@@ -42,6 +55,16 @@ const Header = () => {
 
             {/* {right side section} */}
             <div className='flex items-center'>
+                {!hasPro && (
+                  <Button
+                  variant='ghost'
+                  size="sm"
+                  onClick={() => showUpgradeModal(true)}
+                  >
+                   Pricing
+                  </Button>
+                )}
+
                 {/* create event */}
                 <Button variant='ghost' size='sm' onClick={() => setShowUpgradeModal(true)}>Pricing</Button>
                 <Button variant='ghost' size='sm' asChild className={'mr-2'}>
@@ -100,6 +123,12 @@ const Header = () => {
         isOpen={showOnboarding}
         onClose={handleOnboardingSkip}
         onComplete={handleOnboardingComplete}
+        />
+
+        <UpgardeModal
+        isOpen={showUpgardeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        trigger="header"
         />
     </>
   )
