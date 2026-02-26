@@ -11,8 +11,8 @@ import { Building, Crown, Plus, Ticket } from 'lucide-react';
 import { OnBoardingModal } from './OnBoardingModal';
 import { useOnboarding } from '@/hooks/use-onboarding';
 import SearchLocationBar from './SearchLocationBar';
-import { has } from 'lodash';
 import { Badge } from './ui/badge';
+import UpgradeModal from './UpgradeModal';
 
 const Header = () => {
 
@@ -21,8 +21,8 @@ const Header = () => {
 
   const {showOnboarding,handleOnboardingComplete,handleOnboardingSkip} = useOnboarding();
 
-  const  auth = useAuth();
-  const hasPro  = has?.({plan: "Pro"})
+  const  { has } = useAuth();
+  const hasPro  = has?.({plan: "pro"})
   return (
     <>
       <nav className='fixed top-0 left-0 right-0 bg-background/80 backdrop-blur-3xl z-20 border-b'>
@@ -30,17 +30,17 @@ const Header = () => {
             {/* {logo} */}
             <Link href="/" className="flex items-center">
             <Image
-             src="/logo6.png"
+             src="/logo7.png"
              alt="Evenza Logo"
-             width={250}
-             height={200}
+             width={350}
+             height={300}
              className="h-13 w-auto md:h-20 transition-all duration-300 hover:scale-110 rounded-2xl"
              />
 
            {/* Pro badge */}
 
            {hasPro && (
-             <Badge className="bg-linear-to-r from-pink-500 to-orange-500 gap-1 text-white ml-1">
+             <Badge className="bg-linear-to-r from-pink-500 to-orange-500 gap-1 text-white">
                 <Crown className="w-5 h-5" />
                 Pro
             </Badge>
@@ -125,8 +125,8 @@ const Header = () => {
         onComplete={handleOnboardingComplete}
         />
 
-        <UpgardeModal
-        isOpen={showUpgardeModal}
+        <UpgradeModal
+        isOpen={showUpgradeModal}
         onClose={() => setShowUpgradeModal(false)}
         trigger="header"
         />
