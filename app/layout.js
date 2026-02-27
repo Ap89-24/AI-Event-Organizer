@@ -1,3 +1,4 @@
+
 import Header from "@/components/Header";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -5,6 +6,7 @@ import { ConvexClientProvider } from "./ConvexClientProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { shadesOfPurple } from "@clerk/themes";
 import { Toaster } from "@/components/ui/sonner";
+import AdvancedPageTransition from "@/components/AdvancedPageTransition";
 
 export const metadata = {
   title: "AI-Events-Organizer",
@@ -34,6 +36,9 @@ export default function RootLayout({ children }) {
 
               <Header />
 
+             <AdvancedPageTransition>
+           
+
               <main className="relative min-h-screen container mx-auto pt-40 md:pt-32">
                 {/* {glow} */}
                 <div className="pointer-events-none">
@@ -54,6 +59,7 @@ export default function RootLayout({ children }) {
                 </footer>
                 <Toaster richColors />
               </main>
+                </AdvancedPageTransition>
             </ConvexClientProvider>
           </ClerkProvider>
         </ThemeProvider>

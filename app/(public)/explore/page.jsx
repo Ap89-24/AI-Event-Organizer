@@ -20,12 +20,15 @@ import { createLocationSlug } from "@/lib/location-util";
 import EventCard from "@/components/EventCard";
 import { CATEGORIES } from "@/lib/data";
 import { Card, CardContent } from "@/components/ui/card";
+import { useEffect } from "react";
+import { gsap } from "gsap";
 
 const ExplorePage = () => {
   //Fetch current user for location...
   const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
 
   const router = useRouter();
+  const containerRef = useRef(null);
 
   const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
 
@@ -72,10 +75,27 @@ const ExplorePage = () => {
 
      const slug = createLocationSlug(city, state);
      router.push(`/explore/${slug}`);
-  }
+    }
 
-  //Loading state....
-  const isLoading = loadingFeatured || loadingLocal || popularLoading;
+    //Loading state....
+    const isLoading = loadingFeatured || loadingLocal || popularLoading;
+
+  useEffect(() => {
+  if (!containerRef.current) return;
+
+  const ctx = gsap.context(() => {
+    gsap.from(containerRef.current.children, {
+      opacity: 0,
+      y: 30,
+      duration: 0.6,
+      stagger: 0.12,
+      ease: "power2.out",
+    });
+  }, containerRef);
+
+  return () => ctx.revert();
+}, [featuredEvents, localEvents, popularEvents]);
+
   
   if(isLoading) {
     return (
@@ -85,9 +105,11 @@ const ExplorePage = () => {
     );
   }
 
+
+
   return (
-    <>
-      <div className="pb-12 text-center">
+    <div ref={containerRef}>
+      <div className="hero-section pb-12 text-center">
         <h1 className="text-5xl md:text-6xl font-bold mb-5">Discover Events</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
           Explore featured events, find what&apos;s happening locally, or browse
@@ -98,7 +120,7 @@ const ExplorePage = () => {
       {/* Featured carousel */}
 
       {featuredEvents && featuredEvents.length > 0 && (
-        <div className="mb-16">
+        <div className="section-block mb-16">
           <Carousel plugins={[plugin.current]}
           className={'w-full'}
           onMouseEnter={plugin.current.stop}
@@ -187,6 +209,7 @@ const ExplorePage = () => {
               event={event}
               variant="grid"
               onClick={() => handleEventClick(event.slug)}
+              className="event-card-animate"
               />
             )})}
           </div>
@@ -268,7 +291,7 @@ const ExplorePage = () => {
           </div>
         </Card>
       )}
-    </>
+    </div>
   );
 };
 
