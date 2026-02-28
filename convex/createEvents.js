@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { internal } from "./_generated/api";
 
 
@@ -78,5 +78,76 @@ export const createEvent = mutation({
         } catch (error) {
             throw new Error(`Failed to create new event ${error.message}`);
         }
+    }
+})
+
+
+//Get event by slug...
+export const getEventBySlug = query({
+    args: { slug: v.string() },
+    handler: async(ctx,args) => {
+        const  event = await ctx.db
+           .query("events")
+           .withIndex("by_slug" , (q) => q.eq("slug" , args.slug))
+           .unique();
+
+        return event;
+    },
+})
+
+
+//Get events by organizer...
+export const getEventsByOrg = query({
+    handler: async(ctx) => {
+        const user = await ctx.db.runQuery(internal.users.getCurrentUser);
+
+        const events = await ctx.db
+            .query("events")
+            .withIndex("by_organizer" , (q) => q.eq("organizerId" , user._id))
+            .order("desc")
+            .collect();
+
+        return events;    
+    }
+})
+
+
+//Delete event....
+export const deleteEvent = mutation({
+    args: {eventId: v.id("events")},
+    handler: async (ctx,args) => {
+       const user = await ctx.db.runQuery(internal.users.getCurrentUser);
+       
+       const event = await ctx.db.get(args.eventId);
+       if(!event){
+        throw new Error("Event not found🚫🚫🚫🚫")
+       }
+
+       //Check if user is the organizer...
+       if(event.organizerId !== user._id){
+        throw new Error("🔒 Only the event organizer can delete this event.")
+       }
+
+       //Delete all registration for this event...
+       const registrations = await ctx.db
+            .query("events")
+            .withIndex("by_event" , (q) => q.eq("eventId" , args.eventId))
+            .collect();
+
+        for(const registration of registrations){
+            await ctx.db.delete(registration._id);
+        }
+
+        //Delete an event...
+        await ctx.db.delete(args.eventId);
+
+        //For Pro members subscrption...
+        if(user.freeEventsCreated > 0){
+            await ctx.db.patch(user._id , {
+                freeEventsCreated: user.freeEventsCreated - 1,
+            });
+        }
+
+        return {success: true};
     }
 })
