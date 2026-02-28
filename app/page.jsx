@@ -120,7 +120,7 @@ export default function Home() {
            drop-shadow-[0_0_25px_rgba(168,85,247,0.45)]">Events Worldwide</span>
             </h1>
 
-            <p className="text-lg sm:text-xl text-gray-400 mb-12 max-w-lg font-light">
+            <p className="text-lg sm:text-xl text-gray-400 mb-12 max-w-lg font-normal font-[Nunito] leading-relaxed">
               Join our community to explore events that match your interests or create your own unforgettable experiences at Evenza.
             </p>
 

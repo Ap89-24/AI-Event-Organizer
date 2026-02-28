@@ -1,3 +1,5 @@
+/* Premium Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -121,5 +123,11 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Nunito', sans-serif;
   }
+
+  /* Headings font */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Quicksand', sans-serif;
+}
 }

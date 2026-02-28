@@ -79,22 +79,30 @@ const ExplorePage = () => {
 
     //Loading state....
     const isLoading = loadingFeatured || loadingLocal || popularLoading;
-
-  useEffect(() => {
+    
+   useEffect(() => {
   if (!containerRef.current) return;
+  if (isLoading) return;
 
   const ctx = gsap.context(() => {
-    gsap.from(containerRef.current.children, {
+
+    const sections = Array.from(containerRef.current.children);
+
+    gsap.from(sections, {
       opacity: 0,
-      y: 30,
-      duration: 0.6,
-      stagger: 0.12,
-      ease: "power2.out",
+      y: 40,
+      duration: 0.7,
+      stagger: 0.15,
+      ease: "power3.out",
+      clearProps: "all",
     });
+
   }, containerRef);
 
   return () => ctx.revert();
-}, [featuredEvents, localEvents, popularEvents]);
+
+}, [isLoading, featuredEvents, localEvents, popularEvents]);
+  
 
   
   if(isLoading) {
