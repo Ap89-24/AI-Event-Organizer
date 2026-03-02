@@ -5,11 +5,12 @@ import { api } from '@/convex/_generated/api';
 import { useConvexMutation, useConvexQuery } from '@/hooks/use-convex-query';
 import { useAuth } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { City, State } from 'country-state-city';
+import UpgradeModal from '@/components/UpgradeModal';
 
 
 // HH:MM in 24h
@@ -68,7 +69,7 @@ const CreateEvent = () => {
       locationType: "physical",
       ticketType: "free",
       capacity: 50,
-      themeColor: "1e3a8a",
+      themeColor: "#1e3a8a",
       category: "",
       state: "",
       city: "",
@@ -100,8 +101,40 @@ const CreateEvent = () => {
   ]
 
   return (
-    <div>
-      event
+    <div style={{backgroundColor: themeColor}}
+    className="min-h-screen transition-colors duration-300 px-6 py-8 -mt-6 lg:rounded-md"
+    >
+      <div className="max-w-6xl mx-auto flex flex-col gap-5 md:flex-row justify-between mb-10">
+        <div>
+          <h1 className="text-5xl font-bold">Create Event</h1>
+          {!hasPro && (
+            <p className="text-sm text-muted-foreground mt-2">
+              Free: {currentUser?.freeEventsCreated || 0}/1 events created
+            </p>
+          )}
+        </div>
+        {/* AI Event Creator.... */}
+      </div>
+
+      <div className="max-w-6xl mx-auto grid md:grid-cols-[320px_1fr] gap-10">
+
+      {/* Left -- themeColor + image */}
+      <div>left</div>
+
+      {/* Right -- Form */}
+      <div>right</div>
+      </div>
+
+
+      {/* Unsplash picker */}
+
+      {/* Upgrade modal */}
+
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        trigger={upgradeReason}
+        />
     </div>
   )
 }
