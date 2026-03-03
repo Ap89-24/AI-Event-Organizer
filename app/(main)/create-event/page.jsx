@@ -11,6 +11,7 @@ import z from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { City, State } from 'country-state-city';
 import UpgradeModal from '@/components/UpgradeModal';
+import Image from 'next/image';
 
 
 // HH:MM in 24h
@@ -119,7 +120,25 @@ const CreateEvent = () => {
       <div className="max-w-6xl mx-auto grid md:grid-cols-[320px_1fr] gap-10">
 
       {/* Left -- themeColor + image */}
-      <div>left</div>
+      <div className="space-y-6">
+           <div className="aspect-square w-full rounded-xl overflow-hidden flex items-center justify-center cursor-pointer border"
+           onClick={() => setShowImagePicker(true)}
+           >
+           {coverImage ? (
+            <Image
+            src={coverImage}
+            alt="cover image"
+            className="w-full h-full object-cover"
+            width={500}
+            height={500}
+            priority
+            />
+           ) : 
+          ( <span className="opacity-50 text-sm">
+            Click to add cover image
+            </span>)}   
+           </div>
+      </div>
 
       {/* Right -- Form */}
       <div>right</div>
