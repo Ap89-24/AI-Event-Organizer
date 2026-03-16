@@ -9,6 +9,7 @@ import { useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Loader2, Search } from "lucide-react";
+import Image from "next/image";
 
 export function UnsplashImagePicker({IsOpen , OnClose , OnSelect}) {
 
@@ -65,11 +66,43 @@ export function UnsplashImagePicker({IsOpen , OnClose , OnSelect}) {
                    <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
                 </div>
             ) : (
-                <div>
-
+                <div className="grid grid-cols-3 gap-4 py-4">
+                      {images.map((image , index) => (
+                        <button
+                        key={image.id}
+                        onClick={() => OnSelect(image.urls.regular)}
+                        className="relative aspect-video overflow-hidden rounded-lg border-2 border-transparent hover:border-purple-500 transition-all"
+                        >
+                          <Image
+                           src={image.urls.small}
+                           alt={image.description || "Unsplash Images"}
+                           className="w-full h-full object-cover"
+                           width={400}
+                           height={300}
+                          />
+                        </button>
+                      ))}
                 </div>
             )}
-            </div>          
+
+            {!loading && images.length === 0 && (
+              <div className="text-center text-muted-foreground py-12">
+                  Search for images to get started
+              </div>
+            )}
+            </div>      
+
+            <p className="text-xs text-muted-foreground">
+               Photos from {" "}
+               <a 
+               href="http://unsplash.com"
+               target="_blank"
+               rel="noopener noreferrer"
+               className="underline"
+               >
+                Unsplash
+               </a>
+              </p>    
         </DialogContent>
     </Dialog>
   )
