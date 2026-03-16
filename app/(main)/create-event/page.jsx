@@ -13,6 +13,9 @@ import { City, State } from 'country-state-city';
 import UpgradeModal from '@/components/UpgradeModal';
 import Image from 'next/image';
 import { UnsplashImagePicker } from '@/components/UnsplashImagePicker';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { Crown, Sparkle } from 'lucide-react';
 
 
 // HH:MM in 24h
@@ -97,13 +100,48 @@ const CreateEvent = () => {
   }, [selectedState, IndianStates]);
 
   //Color presets = show all for pro users and default for free ones....
-  const colorPresets = [
-    "#1e3a8a",
-    ...(hasPro ? ["#4c1d95", "#065f46", "#92400e", "#7f1d1d", "#831843"] : [])
-  ]
+const colorPresets = [
+  "#1e3a8a",
+
+  ...(hasPro
+    ? [
+        "#4c1d95",
+        "#065f46",
+        "#92400e",
+        "#7f1d1d",
+        "#831843",
+        "#0c4a6e",
+        "#22c55e",
+        "#9333ea",
+        "#d4af37",
+        "#c2410c",
+        "#3f6212",
+        "#db2777",
+
+        // 🌈 Premium Gradients
+        "linear-gradient(135deg, #ff512f, #dd2476)",
+        "linear-gradient(135deg, #667eea, #764ba2)",
+        "linear-gradient(135deg, #00c6ff, #0072ff)",
+        "linear-gradient(135deg, #11998e, #38ef7d)",
+        "linear-gradient(135deg, #fc466b, #3f5efb)",
+        "linear-gradient(135deg,#43cea2,#185a9d)",
+        "linear-gradient(135deg,#f7971e,#ffd200)",
+        "linear-gradient(135deg,#30cfd0,#330867)"
+      ]
+    : [])
+];
+
+  const handleColorClick = (color) => {
+    if(color !== "1e3a8a" && !hasPro){
+      setUpgradeReason("color");
+      setShowUpgradeModal(true);
+      return;
+    }
+    setValue("themeColor" , color);
+  }
 
   return (
-    <div style={{backgroundColor: themeColor}}
+    <div style={{background: themeColor}}
     className="min-h-screen transition-colors duration-300 px-6 py-8 -mt-6 lg:rounded-md"
     >
       <div className="max-w-6xl mx-auto flex flex-col gap-5 md:flex-row justify-between mb-10">
@@ -138,6 +176,55 @@ const CreateEvent = () => {
           ( <span className="opacity-50 text-sm">
             Click to add cover image
             </span>)}   
+           </div>
+
+           <div className="space-y-2">
+             <div className="flex items-center justify-between">
+               <Label className="text-sm">Theme Color</Label>
+               {!hasPro && (
+                <Badge variant="secondary" className="text-xs gap-1">
+                   <Crown className="w-4 h-5" />
+                   Pro ✨✨
+                </Badge>
+               )}
+             </div>
+
+             <div className="flex gap-1 flex-wrap">
+               {colorPresets.map((color) => (
+                <button
+                key={color}
+                type="button"
+                className={`w-10 h-10 rounded-full border-2 transition-all ${!hasPro && color !== "1e3a8a" ? "opacity-40 cursor-not-allowed" : "hover:scale-110"}`}
+                style={{
+                  background: color,
+                  borderColor: themeColor === color ? "white" : "transparent",
+                }}
+                onClick={() => handleColorClick(color)}
+                title={
+                  !hasPro && color !== "1e3a8a" ? "Upgrade to Pro for custom colors" : ""
+                }
+                />
+               ))}
+
+               {!hasPro && (
+                <button
+                type="button"
+                onClick={() => {
+                  setUpgradeReason("color");
+                  setShowUpgradeModal(true);
+                }}
+                className="w-10 h-10 rounded-full border-2 border-dashed border-purple-300 flex items-center justify-center hover:border-purple-500 transition-all"
+                title="Unlock more Colors with Pro"
+                >
+                  <Sparkle className="w-5 h-5 text-purple-500" />
+                </button>
+               )}
+             </div>
+             {!hasPro && (
+              <p  className="text-xs text-muted-foreground">
+                 Upgrade to pro to unlock custom theme colors
+              </p>
+             )}
            </div>
       </div>
 
