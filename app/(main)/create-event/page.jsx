@@ -1,65 +1,76 @@
 /* eslint-disable react-hooks/incompatible-library */
 "use client";
 
-import { api } from '@/convex/_generated/api';
-import { useConvexMutation, useConvexQuery } from '@/hooks/use-convex-query';
-import { useAuth } from '@clerk/nextjs';
-import { useRouter } from 'next/navigation';
-import React, { useMemo, useState } from 'react'
-import { useForm } from 'react-hook-form';
-import z from 'zod';
+import { api } from "@/convex/_generated/api";
+import { useConvexMutation, useConvexQuery } from "@/hooks/use-convex-query";
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import React, { useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { City, State } from 'country-state-city';
-import UpgradeModal from '@/components/UpgradeModal';
-import Image from 'next/image';
-import { UnsplashImagePicker } from '@/components/UnsplashImagePicker';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Crown, Sparkle } from 'lucide-react';
-
+import { City, State } from "country-state-city";
+import UpgradeModal from "@/components/UpgradeModal";
+import Image from "next/image";
+import { UnsplashImagePicker } from "@/components/UnsplashImagePicker";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { CalendarIcon, Crown, Sparkle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
 
 // HH:MM in 24h
 const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
 const eventSchema = z.object({
-    title: z.string().min(5 , "Title must be at least 5 character long"),
-    description: z
-          .string()
-          .min(20 , "Description must be at least 20 character long"),
-    category: z.string().min(1 , "Please select a category"),
+  title: z.string().min(5, "Title must be at least 5 character long"),
+  description: z
+    .string()
+    .min(20, "Description must be at least 20 character long"),
+  category: z.string().min(1, "Please select a category"),
 
-    startDate: z.date({required_error: "Start date in require"}),
-    endDate: z.date({required_error: "End date in require"}),
-    startTime: z.string().regex(timeRegex , "Start time must be HH:MM"),
-    endTime: z.string().regex(timeRegex , "End time must be HH:MM"),
+  startDate: z.date({ required_error: "Start date in require" }),
+  endDate: z.date({ required_error: "End date in require" }),
+  startTime: z.string().regex(timeRegex, "Start time must be HH:MM"),
+  endTime: z.string().regex(timeRegex, "End time must be HH:MM"),
 
-    locationType: z.enum(["physical" , "online"]).default("physical"),
-    venue: z.string().url("Must be a valid URL").optional().or(z.literal("")),
-    address: z.string().optional(),
-    city: z.string().min(1 , "City is required"),
-    state: z.string().optional(),
+  locationType: z.enum(["physical", "online"]).default("physical"),
+  venue: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  address: z.string().optional(),
+  city: z.string().min(1, "City is required"),
+  state: z.string().optional(),
 
-    capacity: z.number().min(1 , "Capacity must be at least 1"),
-    ticketType: z.enum(["free" , "paid"]).default("free"),
-    ticketPrice: z.number().optional(),
-    coverImage: z.string().optional(),
-    themeColor: z.string().default("#1e3a8a"),
+  capacity: z.number().min(1, "Capacity must be at least 1"),
+  ticketType: z.enum(["free", "paid"]).default("free"),
+  ticketPrice: z.number().optional(),
+  coverImage: z.string().optional(),
+  themeColor: z.string().default("#1e3a8a"),
 });
 const CreateEvent = () => {
-
   const router = useRouter();
-  
-  const [showImagePicker , setShowImagePicker] = useState(false);
-  const [showUpgradeModal , setShowUpgradeModal] = useState(false);
-  const [upgradeReason , setUpgradeReason] = useState("limit");   //limit or color......
+
+  const [showImagePicker, setShowImagePicker] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [upgradeReason, setUpgradeReason] = useState("limit"); //limit or color......
 
   //check if user has a pro plan oe not....
   const { has } = useAuth();
-  const hasPro = has?.({plan: "pro"});
+  const hasPro = has?.({ plan: "pro" });
 
-  const {data: currentUser} = useConvexQuery(api.users.getCurrentUser);
-  const {mutate: createEvent , isLoading} = useConvexMutation(api.event.CreateEvent);
-
+  const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
+  const { mutate: createEvent, isLoading } = useConvexMutation(
+    api.event.CreateEvent,
+  );
 
   const {
     register,
@@ -67,8 +78,8 @@ const CreateEvent = () => {
     watch,
     setValue,
     control,
-    formState: {errors},
-  } =  useForm({
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(eventSchema),
     defaultValues: {
       locationType: "physical",
@@ -80,7 +91,7 @@ const CreateEvent = () => {
       city: "",
       startTime: "",
       endTime: "",
-    }
+    },
   });
 
   const themeColor = watch("themeColor");
@@ -90,7 +101,7 @@ const CreateEvent = () => {
   const endDate = watch("endDate");
   const coverImage = watch("coverImage");
 
-   const IndianStates = State.getStatesOfCountry("IN");
+  const IndianStates = State.getStatesOfCountry("IN");
 
   const cities = useMemo(() => {
     if (!selectedState) return [];
@@ -100,49 +111,52 @@ const CreateEvent = () => {
   }, [selectedState, IndianStates]);
 
   //Color presets = show all for pro users and default for free ones....
-const colorPresets = [
-  "#1e3a8a",
+  const colorPresets = [
+    "#1e3a8a",
 
-  ...(hasPro
-    ? [
-        "#4c1d95",
-        "#065f46",
-        "#92400e",
-        "#7f1d1d",
-        "#831843",
-        "#0c4a6e",
-        "#22c55e",
-        "#9333ea",
-        "#d4af37",
-        "#c2410c",
-        "#3f6212",
-        "#db2777",
+    ...(hasPro
+      ? [
+          "#4c1d95",
+          "#065f46",
+          "#92400e",
+          "#7f1d1d",
+          "#831843",
+          "#0c4a6e",
+          "#22c55e",
+          "#9333ea",
+          "#d4af37",
+          "#c2410c",
+          "#3f6212",
+          "#db2777",
 
-        // 🌈 Premium Gradients
-        "linear-gradient(135deg, #ff512f, #dd2476)",
-        "linear-gradient(135deg, #667eea, #764ba2)",
-        "linear-gradient(135deg, #00c6ff, #0072ff)",
-        "linear-gradient(135deg, #11998e, #38ef7d)",
-        "linear-gradient(135deg, #fc466b, #3f5efb)",
-        "linear-gradient(135deg,#43cea2,#185a9d)",
-        "linear-gradient(135deg,#f7971e,#ffd200)",
-        "linear-gradient(135deg,#30cfd0,#330867)"
-      ]
-    : [])
-];
+          // 🌈 Premium Gradients
+          "linear-gradient(135deg, #ff512f, #dd2476)",
+          "linear-gradient(135deg, #667eea, #764ba2)",
+          "linear-gradient(135deg, #00c6ff, #0072ff)",
+          "linear-gradient(135deg, #11998e, #38ef7d)",
+          "linear-gradient(135deg, #fc466b, #3f5efb)",
+          "linear-gradient(135deg,#43cea2,#185a9d)",
+          "linear-gradient(135deg,#f7971e,#ffd200)",
+          "linear-gradient(135deg,#30cfd0,#330867)",
+        ]
+      : []),
+  ];
 
   const handleColorClick = (color) => {
-    if(color !== "1e3a8a" && !hasPro){
+    if (color !== "1e3a8a" && !hasPro) {
       setUpgradeReason("color");
       setShowUpgradeModal(true);
       return;
     }
-    setValue("themeColor" , color);
-  }
+    setValue("themeColor", color);
+  };
+
+  const onSubmit = async (data) => {};
 
   return (
-    <div style={{background: themeColor}}
-    className="min-h-screen transition-colors duration-300 px-6 py-8 -mt-6 lg:rounded-md"
+    <div
+      style={{ background: themeColor }}
+      className="min-h-screen transition-colors duration-300 px-6 py-8 -mt-6 lg:rounded-md"
     >
       <div className="max-w-6xl mx-auto flex flex-col gap-5 md:flex-row justify-between mb-10">
         <div>
@@ -157,91 +171,179 @@ const colorPresets = [
       </div>
 
       <div className="max-w-6xl mx-auto grid md:grid-cols-[320px_1fr] gap-10">
+        {/* Left -- themeColor + image */}
+        <div className="space-y-6">
+          <div
+            className="aspect-square w-full rounded-xl overflow-hidden flex items-center justify-center cursor-pointer border"
+            onClick={() => setShowImagePicker(true)}
+          >
+            {coverImage ? (
+              <Image
+                src={coverImage}
+                alt="cover image"
+                className="w-full h-full object-cover"
+                width={500}
+                height={500}
+                priority
+              />
+            ) : (
+              <span className="opacity-50 text-sm">
+                Click to add cover image
+              </span>
+            )}
+          </div>
 
-      {/* Left -- themeColor + image */}
-      <div className="space-y-6">
-           <div className="aspect-square w-full rounded-xl overflow-hidden flex items-center justify-center cursor-pointer border"
-           onClick={() => setShowImagePicker(true)}
-           >
-           {coverImage ? (
-            <Image
-            src={coverImage}
-            alt="cover image"
-            className="w-full h-full object-cover"
-            width={500}
-            height={500}
-            priority
-            />
-           ) : 
-          ( <span className="opacity-50 text-sm">
-            Click to add cover image
-            </span>)}   
-           </div>
-
-           <div className="space-y-2">
-             <div className="flex items-center justify-between">
-               <Label className="text-sm">Theme Color</Label>
-               {!hasPro && (
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label className="text-sm">Theme Color</Label>
+              {!hasPro && (
                 <Badge variant="secondary" className="text-xs gap-1">
-                   <Crown className="w-4 h-5" />
-                   Pro ✨✨
+                  <Crown className="w-4 h-5" />
+                  Pro ✨✨
                 </Badge>
-               )}
-             </div>
+              )}
+            </div>
 
-             <div className="flex gap-1 flex-wrap">
-               {colorPresets.map((color) => (
+            <div className="flex gap-1 flex-wrap">
+              {colorPresets.map((color) => (
                 <button
-                key={color}
-                type="button"
-                className={`w-10 h-10 rounded-full border-2 transition-all ${!hasPro && color !== "1e3a8a" ? "opacity-40 cursor-not-allowed" : "hover:scale-110"}`}
-                style={{
-                  background: color,
-                  borderColor: themeColor === color ? "white" : "transparent",
-                }}
-                onClick={() => handleColorClick(color)}
-                title={
-                  !hasPro && color !== "1e3a8a" ? "Upgrade to Pro for custom colors" : ""
-                }
+                  key={color}
+                  type="button"
+                  className={`w-10 h-10 rounded-full border-2 transition-all ${!hasPro && color !== "1e3a8a" ? "opacity-40 cursor-not-allowed" : "hover:scale-110"}`}
+                  style={{
+                    background: color,
+                    borderColor: themeColor === color ? "white" : "transparent",
+                  }}
+                  onClick={() => handleColorClick(color)}
+                  title={
+                    !hasPro && color !== "1e3a8a"
+                      ? "Upgrade to Pro for custom colors"
+                      : ""
+                  }
                 />
-               ))}
+              ))}
 
-               {!hasPro && (
+              {!hasPro && (
                 <button
-                type="button"
-                onClick={() => {
-                  setUpgradeReason("color");
-                  setShowUpgradeModal(true);
-                }}
-                className="w-10 h-10 rounded-full border-2 border-dashed border-purple-300 flex items-center justify-center hover:border-purple-500 transition-all"
-                title="Unlock more Colors with Pro"
+                  type="button"
+                  onClick={() => {
+                    setUpgradeReason("color");
+                    setShowUpgradeModal(true);
+                  }}
+                  className="w-10 h-10 rounded-full border-2 border-dashed border-purple-300 flex items-center justify-center hover:border-purple-500 transition-all"
+                  title="Unlock more Colors with Pro"
                 >
                   <Sparkle className="w-5 h-5 text-purple-500" />
                 </button>
-               )}
-             </div>
-             {!hasPro && (
-              <p  className="text-xs text-muted-foreground">
-                 Upgrade to pro to unlock custom theme colors
+              )}
+            </div>
+            {!hasPro && (
+              <p className="text-xs text-muted-foreground">
+                Upgrade to pro to unlock custom theme colors
               </p>
-             )}
-           </div>
-      </div>
+            )}
+          </div>
+        </div>
 
-      {/* Right -- Form */}
-      <div>right</div>
-      </div>
+        {/* Right -- Form */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+          <div>
+            <Input
+              {...register("title")}
+              placeholder="Event Name"
+              className="text-3xl font-bold bg-transparent border-none focus-visible:ring-2 focus-visible:border-white"
+            />
+            {errors.title && (
+              <p className="text-sm text-red-400 mt-1">
+                {errors.title.message}
+              </p>
+            )}
+          </div>
 
+          <div className="grid grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label className="text-sm">Start</Label>
+
+              <div className="grid grid-cols-[1fr_auto] gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-between"
+                    >
+                      {startDate ? format(startDate, "PPP") : "Pick Date"}
+                      <CalendarIcon className="w-4 h-4 opacity-60" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="p-0">
+                    <Calendar
+                      mode="single"
+                      selected={startDate}
+                      onSelect={(date) => setValue("startDate", date)}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <Input
+                  type="time"
+                  {...register("startTime")}
+                  placeholder="HH:MM"
+                />
+              </div>
+              {(errors.startDate || errors.startTime) && (
+                <p className="text-sm text-red-400">
+                  {errors.startDate?.message || errors.startTime?.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-sm">End</Label>
+
+              <div className="grid grid-cols-[1fr_auto] gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-between"
+                    >
+                      {endDate ? format(endDate, "PPP") : "Pick Date"}
+                      <CalendarIcon className="w-4 h-4 opacity-60" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="p-0">
+                    <Calendar
+                      mode="single"
+                      selected={endDate}
+                      onSelect={(date) => setValue("endDate", date)}
+                      disabled={(date) => date < (startDate || new Date())}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <Input
+                  type="time"
+                  {...register("endTime")}
+                  placeholder="HH:MM"
+                />
+              </div>
+              {(errors.endDate || errors.endTime) && (
+                <p className="text-sm text-red-400">
+                  {errors.endDate?.message || errors.endTime?.message}
+                </p>
+              )}
+            </div>
+          </div>
+        </form>
+      </div>
 
       {/* Unsplash picker */}
       {showImagePicker && (
         <UnsplashImagePicker
-        IsOpen={showImagePicker}
-        OnClose={() => setShowImagePicker(false)}
-        OnSelect={(url) => {
-          setValue("coverImage" , url);
-          setShowImagePicker(false);
-        }}
+          IsOpen={showImagePicker}
+          OnClose={() => setShowImagePicker(false)}
+          OnSelect={(url) => {
+            setValue("coverImage", url);
+            setShowImagePicker(false);
+          }}
         />
       )}
 
@@ -251,9 +353,9 @@ const colorPresets = [
         isOpen={showUpgradeModal}
         onClose={() => setShowUpgradeModal(false)}
         trigger={upgradeReason}
-        />
+      />
     </div>
-  )
-}
+  );
+};
 
-export default CreateEvent
+export default CreateEvent;
