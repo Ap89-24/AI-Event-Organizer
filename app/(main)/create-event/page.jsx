@@ -346,29 +346,77 @@ const CreateEvent = () => {
             <Label className="text-sm font-bold">Category</Label>
 
             <Controller
-            control={control}
-            name="category"
-            render={({ field }) => (
-              <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select s Category" />
-              </SelectTrigger>
-              <SelectContent>
-                  {CATEGORIES.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>
+              control={control}
+              name="category"
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CATEGORIES.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>
                         {cat.icon} {cat.label}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
-            )}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             />
 
             {errors.category && (
-              <p className="text-sm text-red-400">
-                {errors.category.message}
-              </p> 
+              <p className="text-sm text-red-400">{errors.category.message}</p>
             )}
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-sm font-bold">Location</Label>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Controller
+              control={control}
+              name="state"
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={(val) => {
+                  field.onChange(val);
+                  setValue("city","")
+                }}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select State" />
+                  </SelectTrigger>
+                  <SelectContent>
+                   {IndianStates.map((s) => (
+                    <SelectItem key={s.isoCode} value={s.name}>
+                      {s.name}
+                    </SelectItem>
+                   ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+
+                          <Controller
+              control={control}
+              name="city"
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange} disabled={!selectedState}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder={
+                      selectedState ? "Select City" : "Select State First"
+                    } />
+                  </SelectTrigger>
+                  <SelectContent>
+                   {cities.map((c) => (
+                    <SelectItem key={c.name} value={c.name}>
+                      {c.name}
+                    </SelectItem>
+                   ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            </div>
+
             
           </div>
         </form>
