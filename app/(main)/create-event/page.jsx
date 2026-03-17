@@ -6,7 +6,7 @@ import { useConvexMutation, useConvexQuery } from "@/hooks/use-convex-query";
 import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { City, State } from "country-state-city";
@@ -28,6 +28,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { CATEGORIES } from "@/lib/data";
 
 // HH:MM in 24h
 const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
@@ -262,7 +271,7 @@ const CreateEvent = () => {
 
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label className="text-sm">Start</Label>
+              <Label className="text-sm font-bold">Start</Label>
 
               <div className="grid grid-cols-[1fr_auto] gap-2">
                 <Popover>
@@ -297,7 +306,7 @@ const CreateEvent = () => {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-sm">End</Label>
+              <Label className="text-sm font-bold">End</Label>
 
               <div className="grid grid-cols-[1fr_auto] gap-2">
                 <Popover>
@@ -331,6 +340,36 @@ const CreateEvent = () => {
                 </p>
               )}
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-sm font-bold">Category</Label>
+
+            <Controller
+            control={control}
+            name="category"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select s Category" />
+              </SelectTrigger>
+              <SelectContent>
+                  {CATEGORIES.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id}>
+                        {cat.icon} {cat.label}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+            )}
+            />
+
+            {errors.category && (
+              <p className="text-sm text-red-400">
+                {errors.category.message}
+              </p> 
+            )}
+            
           </div>
         </form>
       </div>
