@@ -15,7 +15,7 @@ import Image from "next/image";
 import { UnsplashImagePicker } from "@/components/UnsplashImagePicker";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { CalendarIcon, Crown, Sparkle } from "lucide-react";
+import { CalendarIcon, Crown, Loader2, Sparkle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
@@ -374,51 +374,132 @@ const CreateEvent = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <Controller
-              control={control}
-              name="state"
-              render={({ field }) => (
-                <Select value={field.value} onValueChange={(val) => {
-                  field.onChange(val);
-                  setValue("city","")
-                }}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select State" />
-                  </SelectTrigger>
-                  <SelectContent>
-                   {IndianStates.map((s) => (
-                    <SelectItem key={s.isoCode} value={s.name}>
-                      {s.name}
-                    </SelectItem>
-                   ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
+                control={control}
+                name="state"
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={(val) => {
+                      field.onChange(val);
+                      setValue("city", "");
+                    }}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select State" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {IndianStates.map((s) => (
+                        <SelectItem key={s.isoCode} value={s.name}>
+                          {s.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
 
-                          <Controller
-              control={control}
-              name="city"
-              render={({ field }) => (
-                <Select value={field.value} onValueChange={field.onChange} disabled={!selectedState}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder={
-                      selectedState ? "Select City" : "Select State First"
-                    } />
-                  </SelectTrigger>
-                  <SelectContent>
-                   {cities.map((c) => (
-                    <SelectItem key={c.name} value={c.name}>
-                      {c.name}
-                    </SelectItem>
-                   ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
+              <Controller
+                control={control}
+                name="city"
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={!selectedState}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue
+                        placeholder={
+                          selectedState ? "Select City" : "Select State First"
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {cities.map((c) => (
+                        <SelectItem key={c.name} value={c.name}>
+                          {c.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
             </div>
 
-            
+            <div className="space-y-2 mt-6">
+              <Label className="text-sm font-bold">Venue Details</Label>
+
+              <Input
+              {...register("venue")}
+              placeholder="Venue link (Google map link)"
+              type="url"
+              />
+
+              {errors.venue && (
+                <p className="text-sm text-red-400">{errors.venue.message}</p>
+              )}
+
+              <Input
+              {...register("address")}
+              placeholder="Full address / street / building(optional)"
+              />
+            </div>
+
+            <div className="space-y-3">
+              <Label className="text-sm font-bold">Tickets</Label>
+              
+              <div className="flex items-center gap-6">
+             <label className="flex items-center gap-2">
+
+             <input
+             type="radio"
+             value="free"
+             {...register("ticketType")}
+             defaultChecked
+             />
+             Free
+             </label>
+
+             <label className="flex items-center gap-2">
+               <input type="radio" value="paid" {...register("ticketType")} />{" "}
+               Paid
+             </label>
+             </div>
+            </div>
+            {ticketType === "paid" && (
+              <Input 
+              type="number"
+              placeholder="Ticket Price in  ₹"
+              {...register("ticketPrice" , {valueAsNumber: true})}
+              />
+            )}
           </div>
+
+          <div className="space-y-2">
+             <Label className="text-sm font-bold">Capacity</Label>
+             <Input
+             type="number"
+             {...register("capacity" , {valueAsNumber: true})}
+             placeholder="Ex: 100"
+             />
+             {errors.capacity && (
+              <p className="text-sm text-red-400">{errors.capacity.message}</p>
+             )}
+          </div>
+
+          <Button
+          type="submit"
+          disabled={isLoading}
+          className="w-full py-6 text-lg rounded-xl"
+          >
+            {isLoading ? (
+              <>
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" /> Creating....
+              </>
+            ) : (
+              "Create Event"
+            )}
+          </Button>
         </form>
       </div>
 
