@@ -21,9 +21,6 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-  PopoverDescription,
-  PopoverHeader,
-  PopoverTitle,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
@@ -31,12 +28,13 @@ import { Calendar } from "@/components/ui/calendar";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { CATEGORIES } from "@/lib/data";
+import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
 
 // HH:MM in 24h
 const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
@@ -78,7 +76,7 @@ const CreateEvent = () => {
 
   const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
   const { mutate: createEvent, isLoading } = useConvexMutation(
-    api.event.CreateEvent,
+    api.createEvents.createEvent,
   );
 
   const {
@@ -160,7 +158,75 @@ const CreateEvent = () => {
     setValue("themeColor", color);
   };
 
-  const onSubmit = async (data) => {};
+  const combineDateTime = (date , time) => {
+     if(!date || !time) return null;
+     const [hh , mm] = time.split(":").map(Number);
+
+     const d = new Date(date);
+     d.setHours(hh , mm , 0 , 0);
+     return d;
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      const start = combineDateTime(data.startDate , data.startTime);
+      const end = combineDateTime(data.endDate , data.endTime);
+
+      if(!start || !end){
+        toast.error("Please choose valid event start and event end date & time.");
+        return;
+      }
+
+      if(end.getTime() <= start.getTime()){
+        toast.error("End date & time must be later than the start date & time.");
+        return;
+      }
+
+      //check event limit for free users
+      if(!hasPro && currentUser?.freeEventsCreated >= 1){
+        setUpgradeReason("limit");
+        setShowUpgradeModal(true);
+        return;
+      }
+
+      if(data.themeColor !== "#1e3a8a" && !hasPro){
+        setUpgradeReason("color");
+        setShowUpgradeModal(true);
+        return;
+      }
+
+
+      await createEvent({
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        tags: [data.category],
+
+        startDate: start.getTime(),
+        endDate: end.getTime(),
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, //"Get user’s current timezone automatically from the browser"
+
+        locationtype: data.locationType,
+        venue: data.venue || undefined,
+        address: data.address || undefined,
+        city: data.city,
+        state: data.state || undefined,
+        country: "India",
+
+        capacity: data.capacity,
+        ticketType: data.ticketType,
+        ticketPrice: data.ticketPrice || undefined,
+        coverImage: data.coverImage || undefined,
+        themeColor: data.themeColor,
+        //hasPro,
+      });
+
+      toast.success("Your event is live! 🎉");
+      router.push("/my-events");
+    } catch (error) {
+      toast.error(error.message || "Failed to create event. Please try again.");
+    }
+  };
 
   return (
     <div
@@ -256,7 +322,8 @@ const CreateEvent = () => {
 
         {/* Right -- Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-          <div>
+          <div className="grid gap-3">
+             <Label className="text-sm font-bold">Event Name</Label>
             <Input
               {...register("title")}
               placeholder="Event Name"
@@ -443,6 +510,21 @@ const CreateEvent = () => {
               {...register("address")}
               placeholder="Full address / street / building(optional)"
               />
+            </div>
+
+            {/* Description */}
+            <div className="space-y-2">
+               <Label className="text-sm font-bold">Description</Label>
+               <Textarea
+               {...register("description")}
+               placeholder="Tell people about your event...."
+               row={5}
+               />
+               {errors.description && (
+                <p className="text-sm text-red-400">
+                  {errors.description.message}
+                </p>
+               )}
             </div>
 
             <div className="space-y-3">

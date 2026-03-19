@@ -17,7 +17,7 @@ export const createEvent = mutation({
         endDate: v.number(),
         timezone: v.string(),
 
-        locationType: v.union(v.literal("physical") , v.literal("online")),
+        locationtype: v.union(v.literal("physical") , v.literal("online")),
         venue: v.optional(v.string()),
         address: v.optional(v.string()),
         city: v.string(),
@@ -29,29 +29,29 @@ export const createEvent = mutation({
         ticketPrice: v.optional(v.number()),
         coverImage: v.optional(v.string()),
         themeColor: v.optional(v.string()),
-        hasPro: v.optional(v.boolean()),
+        //hasPro: v.optional(v.boolean()),
     },
 
     handler: async (ctx , args) => {
         try {
             const user = await ctx.runQuery(internal.users.getCurrentUser);
 
-            //SERVER-SIDE CHECK:-- Verify event limit for free users....
-            if(!hasPro && user.freeEventsCreated >= 1){
-                throw new Error(
-                    "Free event limit reached. Please upgrade to pro to create more events"
-                );
-            }
+            // //SERVER-SIDE CHECK:-- Verify event limit for free users....
+            // if(!args.hasPro && user.freeEventsCreated >= 1){
+            //     throw new Error(
+            //         "Free event limit reached. Please upgrade to pro to create more events"
+            //     );
+            // }
 
-            const defaultColor = "#1e3a8a";
-            if(!hasPro && args.themeColor && args.themeColor !== defaultColor) {
-                throw new Error(
-                    "Custom theme color are a pro feature. Please upgrade to pro."
-                );
-            }
+            // const defaultColor = "#1e3a8a";
+            // if(!args.hasPro && args.themeColor && args.themeColor !== defaultColor) {
+            //     throw new Error(
+            //         "Custom theme color are a pro feature. Please upgrade to pro."
+            //     );
+            // }
            
             //Force default color for free users....
-            const themeColor = hasPro ? args.themeColor : defaultColor;
+            const themeColor =  args.themeColor;
 
           // Generate slug from title
             const slug = args.title
