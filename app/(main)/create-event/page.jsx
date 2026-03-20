@@ -35,6 +35,8 @@ import {
 import { CATEGORIES } from "@/lib/data";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
+import { AiEventGenerator } from "./_components/AiEventGenerator";
+
 
 // HH:MM in 24h
 const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
@@ -228,6 +230,15 @@ const CreateEvent = () => {
     }
   };
 
+  const handleAiGenerate = (generatedData) => {
+    setValue("title", generatedData.title);
+    setValue("description", generatedData.description);
+    setValue("category", generatedData.category);
+    setValue("capacity", generatedData.suggestedCapacity);
+    setValue("ticketType", generatedData.suggestedTicketType);
+    toast.success("Event details filled! Customize as needed.");
+  };
+
   return (
     <div
       style={{ background: themeColor }}
@@ -243,6 +254,7 @@ const CreateEvent = () => {
           )}
         </div>
         {/* AI Event Creator.... */}
+        <AiEventGenerator onEventGenerated={handleAiGenerate} />
       </div>
 
       <div className="max-w-6xl mx-auto grid md:grid-cols-[320px_1fr] gap-10">
