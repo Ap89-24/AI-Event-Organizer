@@ -231,7 +231,7 @@ const CreateEvent = () => {
   };
 
   const handleAiGenerate = (generatedData) => {
-    console.log("AI DATA:", generatedData); // 👈 ADD THIS
+   // console.log("AI DATA:", generatedData); // 👈 ADD THIS
     setValue("title", generatedData.title);
     setValue("description", generatedData.description);
     setValue("category", generatedData.category);

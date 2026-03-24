@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { internal } from "./_generated/api";
 
 
@@ -61,7 +61,7 @@ export const registerForEvent = mutation({
 })
 
 //Check if user is registered for a event or not.....
-export const checkRegistration = mutation({
+export const checkRegistration = query({
     args: {
         eventId: v.id("events"),
     },
@@ -77,4 +77,4 @@ export const checkRegistration = mutation({
 
     return registration;
     },
-})
+});
