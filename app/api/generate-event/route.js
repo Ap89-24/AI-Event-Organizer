@@ -46,15 +46,16 @@ Rules:
 `;
 
     const result = await genai.models.generateContent({
-      model: "gemini-2.0-flash", // ✅ latest working model
+      model: "gemini-3-flash-preview", // ✅ latest working model
       contents: systemPrompt,
-    })
-    const response = await result.response;
-    const text = response.text();
+    });
+  
+    // ✅ Correct extraction for your SDK
+    const text = result?.candidates?.[0]?.content?.parts?.[0]?.text || "";
     console.log("🧠 AI RAW RESPONSE:", text);
     if (!text) {
-  throw new Error("Empty response from AI");
-}
+      throw new Error("Empty response from AI");
+    }
 
     // Clean the response (remove markdown code blocks if present)
     // 🔥 Improved JSON cleaning + parsing

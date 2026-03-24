@@ -231,6 +231,7 @@ const CreateEvent = () => {
   };
 
   const handleAiGenerate = (generatedData) => {
+    console.log("AI DATA:", generatedData); // 👈 ADD THIS
     setValue("title", generatedData.title);
     setValue("description", generatedData.description);
     setValue("category", generatedData.category);
@@ -253,6 +254,7 @@ const CreateEvent = () => {
             </p>
           )}
         </div>
+
         {/* AI Event Creator.... */}
         <AiEventGenerator onEventGenerated={handleAiGenerate} />
       </div>
@@ -286,7 +288,7 @@ const CreateEvent = () => {
               {!hasPro && (
                 <Badge variant="secondary" className="text-xs gap-1">
                   <Crown className="w-4 h-5" />
-                  Pro ✨✨
+                  Pro ✨
                 </Badge>
               )}
             </div>

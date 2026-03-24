@@ -35,7 +35,7 @@ export function AiEventGenerator({ onEventGenerated }) {
                 body: JSON.stringify({prompt}),
             });
 
-            const data = response.json();
+            const data = await response.json();
             onEventGenerated(data);
             toast.success("Event details generated! Review and customize below 🎉🎉");
             setIsOpen(false);
