@@ -10,6 +10,7 @@
 
 import type * as createEvents from "../createEvents.js";
 import type * as event from "../event.js";
+import type * as registrations from "../registrations.js";
 import type * as search from "../search.js";
 import type * as seed from "../seed.js";
 import type * as users from "../users.js";
@@ -23,6 +24,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   createEvents: typeof createEvents;
   event: typeof event;
+  registrations: typeof registrations;
   search: typeof search;
   seed: typeof seed;
   users: typeof users;
