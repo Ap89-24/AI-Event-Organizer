@@ -42,7 +42,6 @@ Rules:
   - small events: 20-50
   - medium events: 50-150
   - large events: 150-500
-- suggestedTicketType should be either "free" or "paid"
 `;
 
     const result = await genai.models.generateContent({

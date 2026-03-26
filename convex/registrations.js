@@ -48,7 +48,7 @@ export const registerForEvent = mutation({
             qrCode: qrCode,
             checkedIn: false,
             status: "Confirmed",
-            registeredAt: new Date.now(),
+            registeredAt: Date.now(),
         })
 
         //Update the event Registration count.....
