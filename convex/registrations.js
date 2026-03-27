@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { internal } from "./_generated/api";
+import {  internal } from "./_generated/api";
 
 
 const generateQRCode = () => {
@@ -78,3 +78,66 @@ export const checkRegistration = query({
     return registration;
     },
 });
+
+export  const getMyRegistrations = query({
+    handler: async(ctx) => {
+        const user = await ctx.runQuery(internal.users.getCurrentUser);
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+        const registrations = await ctx.db
+          .query("registrations")
+          .withIndex("by_user" , (q) => q.eq("userId" , user?._id))
+          .order("desc")
+          .collect();
+
+        const registrationWithEvent = await Promise.all(
+            registrations.map(async (reg) => {
+                const event = await ctx.db.get(reg.eventId);
+                return {...reg , event};
+            })
+        );
+        
+        return  registrationWithEvent;
+    },
+});
+
+export const deleteRegistration = mutation({
+    args: {
+        registrationId: v.id("registrations")
+    },
+
+    handler: async(ctx , args) => {
+        const user = await ctx.runQuery(internal.users.getCurrentUser);
+
+        const registration = await ctx.db.get(args.registrationId);
+        if (!registration) {
+            throw new Error("Registration not found");
+        };
+
+        if(registration.userId !== user?._id){
+            throw new Error("You can only cancel your own registration");
+        };
+
+        const event = await ctx.db.get(registration.eventId);
+        if (!event) {
+            throw new Error("Event not found");
+        };
+
+        //Update registration status
+        await ctx.db.patch(args.registrationId , {
+            status: "cancelled",
+        });
+        
+        //Decrement in registration count....
+        if(event.registrationCount > 0){
+            await ctx.db.patch(registration.eventId , {
+                registrationCount: event.registrationCount - 1,
+            });
+        };
+
+        return {success: true};
+    },
+})
+

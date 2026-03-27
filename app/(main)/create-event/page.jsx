@@ -78,7 +78,7 @@ const CreateEvent = () => {
 
   const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
   const { mutate: createEvent, isLoading } = useConvexMutation(
-    api.createEvents.createEvent,
+    api.events.createEvent,
   );
 
   const {
