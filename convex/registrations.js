@@ -47,7 +47,7 @@ export const registerForEvent = mutation({
             attendeeEmail: args.attendeeEmail,
             qrCode: qrCode,
             checkedIn: false,
-            status: "Confirmed",
+            status: "registered",
             registeredAt: Date.now(),
         })
 

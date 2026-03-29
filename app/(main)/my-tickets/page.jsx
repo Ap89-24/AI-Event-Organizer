@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/purity */
 "use client";
 
+import EventCard from '@/components/EventCard';
 import { api } from '@/convex/_generated/api';
 import { useConvexMutation, useConvexQuery } from '@/hooks/use-convex-query';
 import { Loader2 } from 'lucide-react';
@@ -50,6 +51,17 @@ const MyTicketsPage = () => {
           </div>
 
         {/* Upcoming tickets */}
+        {upcomingTickets?.length > 0 && (
+          <div className="mb-12">
+            <h1 className="text-2xl font-semibold mb-4">Upcoming Events</h1>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+               {upcomingTickets.map((registration) => (
+                <EventCard key={registration._id} event={registration.event} />
+               ))}
+            </div>
+          </div>
+        )}
 
         {/* Past tickets */}
 
