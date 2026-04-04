@@ -3,19 +3,20 @@ import { Card, CardContent } from './ui/card'
 import Image from 'next/image'
 import { getCategoryIcon, getCategoryLabel } from '@/lib/data'
 import { format } from 'date-fns'
-import { Calendar, MapPin, Trash2, Users } from 'lucide-react'
+import { Calendar, Eye, MapPin, QrCode, Trash2, Users, X } from 'lucide-react'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
 
 const EventCard = ({
     event,
     onClick,
-    showActions = false,
     onDelete,
     variant = "grid",
+    action = null,  //? event , ticket or null....
     className = ''
 }) => {
 
+    //! List Variant......
     if(variant === "list"){
         return (
             <Card
@@ -59,6 +60,7 @@ const EventCard = ({
         )
     }
 
+    //! Grid Variant......
   return (
     <Card
             className={`overflow-hidden group pt-0 ${onClick ? "cursor-pointer hover:shadow-lg transition-all hover:border-purple-500/50" : ""} ${className}`}
@@ -117,18 +119,28 @@ const EventCard = ({
                            </div>
                     </div>
 
-                    {showActions && (
-                        <div>
+                    {action && (
+                        <div className="flex gap-2 pt-2">
                             <Button
                             variant="outline"
                             size="sm"
                             className="flex-1"
                             onClick={(e) => {
                                 e.stopPropagation();
-                                onclick?.(e);
+                                onClick?.(e);
                             }}
                             >
-                             View
+                             {action === "event" ? (
+                                <>
+                                <Eye className="w-5 h-5" />
+                                View
+                                </>
+                             ) : (
+                                <>
+                                <QrCode className="w-5 h-5" />
+                                Show Ticket
+                                </>
+                             )}
                             </Button>
 
                             {onDelete && (
@@ -141,7 +153,11 @@ const EventCard = ({
                                 }}
                                 className="text-red-500 hover:text-red-700 hover:bg-red-50"
                                 >
-                                <Trash2 className='w-4 h-4'/>
+                                {action === "event" ? (
+                                    <Trash2 className="w-5 h-5" />
+                                ) : (
+                                    <X className="w-5 h-5" />
+                                )}
                                 </Button>
                             )}
                         </div>

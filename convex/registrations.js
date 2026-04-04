@@ -26,7 +26,7 @@ export const registerForEvent = mutation({
         if(event.registrationCount >= event.capacity){
             throw new Error("Event is Full...");
         }
-
+  
         //check for existing user in the event.....
         const existingUser = await ctx.db
             .query("registrations")
