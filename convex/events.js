@@ -99,7 +99,7 @@ export const getEventBySlug = query({
 //Get events by organizer...
 export const getEventsByOrg = query({
     handler: async(ctx) => {
-        const user = await ctx.db.runQuery(internal.users.getCurrentUser);
+        const user = await ctx.runQuery(internal.users.getCurrentUser);
 
         const events = await ctx.db
             .query("events")
@@ -116,7 +116,7 @@ export const getEventsByOrg = query({
 export const deleteEvent = mutation({
     args: {eventId: v.id("events")},
     handler: async (ctx,args) => {
-       const user = await ctx.db.runQuery(internal.users.getCurrentUser);
+       const user = await ctx.runQuery(internal.users.getCurrentUser);
        
        const event = await ctx.db.get(args.eventId);
        if(!event){
@@ -130,7 +130,7 @@ export const deleteEvent = mutation({
 
        //Delete all registration for this event...
        const registrations = await ctx.db
-            .query("events")
+            .query("registrations")
             .withIndex("by_event" , (q) => q.eq("eventId" , args.eventId))
             .collect();
 
