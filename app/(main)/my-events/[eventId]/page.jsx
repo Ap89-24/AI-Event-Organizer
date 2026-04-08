@@ -1,8 +1,11 @@
 "use client";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { useConvexQuery } from "@/hooks/use-convex-query";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { getCategoryIcon, getCategoryLabel } from "@/lib/data";
+import { format } from "date-fns";
+import { ArrowLeft, Calendar, Eye, Loader2, MapPin, QrCode } from "lucide-react";
 import Image from "next/image";
 import { notFound, useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -92,9 +95,49 @@ const EventDashboard = () => {
       <div className="flex flex-col gap-5 sm:flex-row items-start justify-between mb-4">
          <div className="flex-1">
            <h1 className="text-3xl font-bold mb-3">{event.title}</h1>
+           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+              <Badge variant="outline">
+                 {getCategoryIcon(event.category)} {" "}
+                 {getCategoryLabel(event.category)}
+              </Badge>
+
+              <div className="flex items-center gap-1">
+                 <Calendar className="w-5 h-5" />
+                 <span>{format(event.startDate , "PPP")}</span>
+              </div>
+
+              <div className="flex items-center gap-1">
+                 <MapPin className="w-5 h-5" />
+                 <span>{`${event.city}, ${event.state || event.country}`}</span>
+              </div>
+
+           </div>
+         </div>
+
+         <div className="w-full sm:w-auto">
+           <Button
+           variant="outline"
+           size="sm"
+           onClick={() => router.push(`/events/${event.slug}`)}
+           className="gap-2 flex-1"
+           >
+            <Eye className="w-5 h-5" />
+            View
+           </Button>
          </div>
       </div>
 
+     {/* //! show QR if event is today... */}
+     {stats.isEventToday && ! stats.isEventPast && (
+      <Button
+      size="lg"
+      className="mb-8 w-full gap-2 h-10 bg-linear-to-r from-orange-500 via-pink-500 to-red-500 text-white hover:scale-[1.02]"
+      onClick={() => setShowQrScanner(true)}
+      >
+       <QrCode className="w-5 h-5" />
+       Scan QR code to Check-In
+      </Button>
+     )}
     </div>
 
     {/* OR Scanner model */}
