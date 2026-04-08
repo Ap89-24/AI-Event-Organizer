@@ -3,6 +3,8 @@ import { mutation, query } from "./_generated/server";
 import { internal } from "./_generated/api";
 
 
+// TODO:Create event function arr not working with free ticketType only works with paid one only.I need to fix them later...
+
 
 //Create events.....
 export const createEvent = mutation({

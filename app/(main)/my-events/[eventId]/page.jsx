@@ -1,14 +1,16 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { useConvexQuery } from "@/hooks/use-convex-query";
-import { Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
+import Image from "next/image";
 import { notFound, useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const EventDashboard = () => {
   const params = useParams();
   const router = useRouter();
-  const eventId = params.eventId;
+  const eventId = params?.eventId;
 
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,7 +24,7 @@ const EventDashboard = () => {
   //? Fetch registrations
 
   const { data: registrations, isLoading: registrationsLoading } =
-    useConvexQuery(api.registrations.getMyRegistrations, { eventId });
+    useConvexQuery(api.registrations.getEventRegistrations, { eventId });
 
   if (isLoading || registrationsLoading) {
     return (
@@ -33,8 +35,11 @@ const EventDashboard = () => {
   }
 
   if (!DashboardData) {
-    notFound();
+     return <div>No Dashboard Data Found</div>;
   }
+
+// console.log("DashboardData:", DashboardData);
+// console.log("eventId:", eventId);
 
   const {event , stats} = DashboardData;
 
@@ -59,9 +64,37 @@ const EventDashboard = () => {
         return matchesSearch;
   });
 
-  return <div>
-    <div>
-        
+  return <div className="min-h-screen pb-20 px-4">
+    <div className="max-w-7xl mx-auto">
+      <div className="mb-6">
+         <Button
+         variant="ghost"
+         onClick={() => router.push("/my-events")}
+         className="gap-2 -ml-2"
+         >
+          <ArrowLeft className="w-5 h-5" />
+          Back to My Events
+         </Button>
+      </div>
+
+      {event.coverImage && (
+        <div className="relative h-[350px] rounded-2xl overflow-hidden mb-6">
+           <Image
+           src={event.coverImage}
+            alt={event.title}
+            fill
+            className="object-cover"
+            priority
+           />
+        </div>
+      )}
+
+      <div className="flex flex-col gap-5 sm:flex-row items-start justify-between mb-4">
+         <div className="flex-1">
+           <h1 className="text-3xl font-bold mb-3">{event.title}</h1>
+         </div>
+      </div>
+
     </div>
 
     {/* OR Scanner model */}

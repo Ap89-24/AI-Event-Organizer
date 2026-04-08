@@ -187,3 +187,28 @@ export const checkInAttendee = mutation({
     }
 })
 
+export const getEventRegistrations = query({
+    args: { eventId: v.id("events") },
+    handler: async(ctx , args) => {
+        const user = await ctx.runQuery(internal.users.getCurrentUser);
+
+        const event = await ctx.db.get(args.eventId);
+
+           if(!event){
+            throw new Error("Event not found...");
+           };
+
+           //* Check if the user is the organizer of the event...
+          if (event.organizerId !== user._id) {
+               throw new Error("You are not authorized to view registrations.");
+         };
+
+         const registrations = await ctx.db
+            .query("registrations")
+            .withIndex("by_event" , (q) => q.eq("eventId" , args.eventId))
+            .collect();
+
+            return registrations;
+    }
+})
+
