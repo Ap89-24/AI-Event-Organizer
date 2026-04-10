@@ -1,11 +1,12 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/convex/_generated/api";
 import { useConvexQuery } from "@/hooks/use-convex-query";
 import { getCategoryIcon, getCategoryLabel } from "@/lib/data";
 import { format } from "date-fns";
-import { ArrowLeft, Calendar, Eye, Loader2, MapPin, QrCode } from "lucide-react";
+import { ArrowLeft, Calendar, CheckCircle, Clock, Eye, Loader2, MapPin, QrCode, TrendingUp, Users } from "lucide-react";
 import Image from "next/image";
 import { notFound, useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -138,6 +139,88 @@ const EventDashboard = () => {
        Scan QR code to Check-In
       </Button>
      )}
+
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+      <Card className="py-0">
+         <CardContent className="p-6 flex items-center gap-3">
+            <div className="p-3 bg-purple-100 rounded-lg">
+               <Users className="w-5 h-5 text-purple-600" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold">
+                {stats.totalRegistrations}/{stats.capacity}
+              </p>
+              <p className="text-sm text-muted-foreground">Capacity</p>
+            </div>
+         </CardContent>
+      </Card>
+
+      <Card className="py-0">
+         <CardContent className="p-6 flex items-center gap-3">
+            <div className="p-3 bg-green-100 rounded-lg">
+               <CheckCircle className="w-5 h-5 text-green-600" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold">
+                {stats.checkedInCount}
+              </p>
+              <p className="text-sm text-muted-foreground">Checked In</p>
+            </div>
+         </CardContent>
+      </Card>
+
+      {event.ticketType === "paid" ? (<>
+           <Card className="py-0">
+         <CardContent className="p-6 flex items-center gap-3">
+            <div className="p-3 bg-blue-100 rounded-lg">
+               <TrendingUp className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold">
+                {stats.totalRevenue}
+              </p>
+              <p className="text-sm text-muted-foreground">Revenue</p>
+            </div>
+         </CardContent>
+      </Card>   
+      </>) : (<>
+       <Card className="py-0">
+         <CardContent className="p-6 flex items-center gap-3">
+            <div className="p-3 bg-red-100 rounded-lg">
+               <TrendingUp className="w-5 h-5 text-red-600" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold">
+                {stats.checkedInRate}
+              </p>
+              <p className="text-sm text-muted-foreground">Check-in Rate</p>
+            </div>
+         </CardContent>
+      </Card>   
+      </>)}
+
+      <Card className="py-0">
+         <CardContent className="p-6 flex items-center gap-3">
+            <div className="p-3 bg-amber-100 rounded-lg">
+               <Clock className="w-5 h-5 text-amber-600" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold">
+                {stats.isEventPast
+                ? "Ended"
+                : stats.hoursUntilEvent > 24
+                ? `${Math.floor(stat.hoursUntilEvent / 24)}d`
+                : `${stats.hoursUntilEvent}h`
+                }
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {stats.isEventPast ? "Event Over" : "Time left"}
+              </p>
+            </div>
+         </CardContent>
+      </Card>  
+    </div>
+
     </div>
 
     {/* OR Scanner model */}

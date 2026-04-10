@@ -192,6 +192,10 @@ export const getEventRegistrations = query({
     handler: async(ctx , args) => {
         const user = await ctx.runQuery(internal.users.getCurrentUser);
 
+        if(!user) {
+            throw new Error("User is not authenticated...");
+        }
+
         const event = await ctx.db.get(args.eventId);
 
            if(!event){
