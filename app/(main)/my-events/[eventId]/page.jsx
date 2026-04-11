@@ -2,14 +2,30 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from "@/convex/_generated/api";
 import { useConvexQuery } from "@/hooks/use-convex-query";
 import { getCategoryIcon, getCategoryLabel } from "@/lib/data";
 import { format } from "date-fns";
-import { ArrowLeft, Calendar, CheckCircle, Clock, Eye, Loader2, MapPin, QrCode, TrendingUp, Users } from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar,
+  CheckCircle,
+  Clock,
+  Download,
+  Eye,
+  Loader2,
+  MapPin,
+  QrCode,
+  Search,
+  TrendingUp,
+  Users,
+} from "lucide-react";
 import Image from "next/image";
 import { notFound, useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 const EventDashboard = () => {
   const params = useParams();
@@ -39,192 +55,275 @@ const EventDashboard = () => {
   }
 
   if (!DashboardData) {
-     return <div>No Dashboard Data Found</div>;
+    return <div>No Dashboard Data Found</div>;
   }
 
-// console.log("DashboardData:", DashboardData);
-// console.log("eventId:", eventId);
+  // console.log("DashboardData:", DashboardData);
+  // console.log("eventId:", eventId);
 
-  const {event , stats} = DashboardData;
+  const { event, stats } = DashboardData;
 
   //! Filter registrations based on active tab and search query...
   const filterRegistrations = registrations.filter((reg) => {
-    const matchesSearch = reg.attendeeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        reg.attendeeEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        reg.qrCode.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch =
+      reg.attendeeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      reg.attendeeEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      reg.qrCode.toLowerCase().includes(searchQuery.toLowerCase());
 
-        if(activeTab === "all"){
-            return matchesSearch && reg.status === "registered";
-        };
+    if (activeTab === "all") {
+      return matchesSearch && reg.status === "registered";
+    }
 
-        if(activeTab === "checked-in"){
-            return matchesSearch && reg.checkedIn && reg.status === "registered";
-        };
+    if (activeTab === "checked-in") {
+      return matchesSearch && reg.checkedIn && reg.status === "registered";
+    }
 
-        if(activeTab === "pending"){
-            return matchesSearch && !reg.checkedIn && reg.status === "registered";
-        };
+    if (activeTab === "pending") {
+      return matchesSearch && !reg.checkedIn && reg.status === "registered";
+    }
 
-        return matchesSearch;
+    return matchesSearch;
   });
 
-  return <div className="min-h-screen pb-20 px-4">
-    <div className="max-w-7xl mx-auto">
-      <div className="mb-6">
-         <Button
-         variant="ghost"
-         onClick={() => router.push("/my-events")}
-         className="gap-2 -ml-2"
-         >
-          <ArrowLeft className="w-5 h-5" />
-          Back to My Events
-         </Button>
-      </div>
+  const handleExportCSV = () =>  {
+    if(!registrations || registrations.length === 0){
+        toast.error("No registrations to export");
+        return;
+    };
 
-      {event.coverImage && (
-        <div className="relative h-[350px] rounded-2xl overflow-hidden mb-6">
-           <Image
-           src={event.coverImage}
-            alt={event.title}
-            fill
-            className="object-cover"
-            priority
-           />
+    const csvContent = [
+      [
+        "Name",
+        "Email",
+        "Registered At",
+        "Checked In",
+        "Checked In At",
+        "QR Code",
+      ],
+      ...registrations.map((reg) => [
+        reg.attendeeName,
+        reg.attendeeEmail,
+        new Date(reg.registeredAt).toLocaleString(),
+        reg.checkedIn ? "Yes" : "No",
+        reg.checkedInAt ? new Date(reg. checkedInAt).toLocaleString() : "-",
+        reg.qrCode,
+      ]),
+    ]
+    .map((row) => row.join(","))
+    .join("\n");
+
+    const blob = new Blob([csvContent] , {type: "text/csv"});
+    const url =  window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${DashboardData?.event.title || "event"}_registrations.csv`;
+    a.click();
+    toast.success("CSV exported successfully");
+  };
+
+  return (
+    <div className="min-h-screen pb-20 px-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-6">
+          <Button
+            variant="ghost"
+            onClick={() => router.push("/my-events")}
+            className="gap-2 -ml-2"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Back to My Events
+          </Button>
         </div>
-      )}
 
-      <div className="flex flex-col gap-5 sm:flex-row items-start justify-between mb-4">
-         <div className="flex-1">
-           <h1 className="text-3xl font-bold mb-3">{event.title}</h1>
-           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+        {event.coverImage && (
+          <div className="relative h-[350px] rounded-2xl overflow-hidden mb-6">
+            <Image
+              src={event.coverImage}
+              alt={event.title}
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+        )}
+
+        <div className="flex flex-col gap-5 sm:flex-row items-start justify-between mb-4">
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold mb-3">{event.title}</h1>
+            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
               <Badge variant="outline">
-                 {getCategoryIcon(event.category)} {" "}
-                 {getCategoryLabel(event.category)}
+                {getCategoryIcon(event.category)}{" "}
+                {getCategoryLabel(event.category)}
               </Badge>
 
               <div className="flex items-center gap-1">
-                 <Calendar className="w-5 h-5" />
-                 <span>{format(event.startDate , "PPP")}</span>
+                <Calendar className="w-5 h-5" />
+                <span>{format(event.startDate, "PPP")}</span>
               </div>
 
               <div className="flex items-center gap-1">
-                 <MapPin className="w-5 h-5" />
-                 <span>{`${event.city}, ${event.state || event.country}`}</span>
+                <MapPin className="w-5 h-5" />
+                <span>{`${event.city}, ${event.state || event.country}`}</span>
               </div>
+            </div>
+          </div>
 
-           </div>
-         </div>
+          <div className="w-full sm:w-auto">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.push(`/events/${event.slug}`)}
+              className="gap-2 flex-1"
+            >
+              <Eye className="w-5 h-5" />
+              View
+            </Button>
+          </div>
+        </div>
 
-         <div className="w-full sm:w-auto">
-           <Button
-           variant="outline"
-           size="sm"
-           onClick={() => router.push(`/events/${event.slug}`)}
-           className="gap-2 flex-1"
-           >
-            <Eye className="w-5 h-5" />
-            View
-           </Button>
-         </div>
+        {/* //! show QR if event is today... */}
+        {stats.isEventToday && !stats.isEventPast && (
+          <Button
+            size="lg"
+            className="mb-8 w-full gap-2 h-10 bg-linear-to-r from-orange-500 via-pink-500 to-red-500 text-white hover:scale-[1.02]"
+            onClick={() => setShowQrScanner(true)}
+          >
+            <QrCode className="w-5 h-5" />
+            Scan QR code to Check-In
+          </Button>
+        )}
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <Card className="py-0">
+            <CardContent className="p-6 flex items-center gap-3">
+              <div className="p-3 bg-purple-100 rounded-lg">
+                <Users className="w-5 h-5 text-purple-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">
+                  {stats.totalRegistrations}/{stats.capacity}
+                </p>
+                <p className="text-sm text-muted-foreground">Capacity</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="py-0">
+            <CardContent className="p-6 flex items-center gap-3">
+              <div className="p-3 bg-green-100 rounded-lg">
+                <CheckCircle className="w-5 h-5 text-green-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{stats.checkedInCount}</p>
+                <p className="text-sm text-muted-foreground">Checked In</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {event.ticketType === "paid" ? (
+            <>
+              <Card className="py-0">
+                <CardContent className="p-6 flex items-center gap-3">
+                  <div className="p-3 bg-blue-100 rounded-lg">
+                    <TrendingUp className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">{stats.totalRevenue}</p>
+                    <p className="text-sm text-muted-foreground">Revenue</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          ) : (
+            <>
+              <Card className="py-0">
+                <CardContent className="p-6 flex items-center gap-3">
+                  <div className="p-3 bg-red-100 rounded-lg">
+                    <TrendingUp className="w-5 h-5 text-red-600" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">{stats.checkedInRate}</p>
+                    <p className="text-sm text-muted-foreground">
+                      Check-in Rate
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          )}
+
+          <Card className="py-0">
+            <CardContent className="p-6 flex items-center gap-3">
+              <div className="p-3 bg-amber-100 rounded-lg">
+                <Clock className="w-5 h-5 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">
+                  {stats.isEventPast
+                    ? "Ended"
+                    : stats.hoursUntilEvent > 24
+                      ? `${Math.floor(stats.hoursUntilEvent / 24)}d`
+                      : `${stats.hoursUntilEvent}h`}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {stats.isEventPast ? "Event Over" : "Time left"}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/*//? Attendee Management.... */}
+        <h2 className="text-2xl font-bold mb-4">Attendee Management</h2>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList>
+            <TabsTrigger value="all">
+             All ({stats.totalRegistrations})
+            </TabsTrigger>
+
+            <TabsTrigger value="checked-in">
+             Checked In ({stats.checkedInCount})
+            </TabsTrigger>
+
+           <TabsTrigger value="pending">
+             Pending ({stats.pendingCount})
+            </TabsTrigger>
+          </TabsList>
+
+          {/* //? Search and Actions.... */}
+
+          <div className="flex gap-3 mb-3">
+            <div className="relative flex-1">
+               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+               <Input 
+               placeholder="Search by email , name or QR code...."
+               value={searchQuery}
+               onChange={(e) => setSearchQuery(e.target.value)}
+               className="pl-10"
+               />
+            </div>
+
+            <Button
+            variant="outline"
+            onClick={handleExportCSV}
+            className="gap-2"
+            >
+               <Download className="w-5 h-5" />
+               Export CSV
+            </Button>
+          </div>
+
+          <TabsContent value={activeTab} className="space-y-3 mt-0">
+             {activeTab}
+          </TabsContent>
+          <TabsContent value="password">Change your password here.</TabsContent>
+        </Tabs>
       </div>
 
-     {/* //! show QR if event is today... */}
-     {stats.isEventToday && ! stats.isEventPast && (
-      <Button
-      size="lg"
-      className="mb-8 w-full gap-2 h-10 bg-linear-to-r from-orange-500 via-pink-500 to-red-500 text-white hover:scale-[1.02]"
-      onClick={() => setShowQrScanner(true)}
-      >
-       <QrCode className="w-5 h-5" />
-       Scan QR code to Check-In
-      </Button>
-     )}
-
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-      <Card className="py-0">
-         <CardContent className="p-6 flex items-center gap-3">
-            <div className="p-3 bg-purple-100 rounded-lg">
-               <Users className="w-5 h-5 text-purple-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold">
-                {stats.totalRegistrations}/{stats.capacity}
-              </p>
-              <p className="text-sm text-muted-foreground">Capacity</p>
-            </div>
-         </CardContent>
-      </Card>
-
-      <Card className="py-0">
-         <CardContent className="p-6 flex items-center gap-3">
-            <div className="p-3 bg-green-100 rounded-lg">
-               <CheckCircle className="w-5 h-5 text-green-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold">
-                {stats.checkedInCount}
-              </p>
-              <p className="text-sm text-muted-foreground">Checked In</p>
-            </div>
-         </CardContent>
-      </Card>
-
-      {event.ticketType === "paid" ? (<>
-           <Card className="py-0">
-         <CardContent className="p-6 flex items-center gap-3">
-            <div className="p-3 bg-blue-100 rounded-lg">
-               <TrendingUp className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold">
-                {stats.totalRevenue}
-              </p>
-              <p className="text-sm text-muted-foreground">Revenue</p>
-            </div>
-         </CardContent>
-      </Card>   
-      </>) : (<>
-       <Card className="py-0">
-         <CardContent className="p-6 flex items-center gap-3">
-            <div className="p-3 bg-red-100 rounded-lg">
-               <TrendingUp className="w-5 h-5 text-red-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold">
-                {stats.checkedInRate}
-              </p>
-              <p className="text-sm text-muted-foreground">Check-in Rate</p>
-            </div>
-         </CardContent>
-      </Card>   
-      </>)}
-
-      <Card className="py-0">
-         <CardContent className="p-6 flex items-center gap-3">
-            <div className="p-3 bg-amber-100 rounded-lg">
-               <Clock className="w-5 h-5 text-amber-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold">
-                {stats.isEventPast
-                ? "Ended"
-                : stats.hoursUntilEvent > 24
-                ? `${Math.floor(stat.hoursUntilEvent / 24)}d`
-                : `${stats.hoursUntilEvent}h`
-                }
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {stats.isEventPast ? "Event Over" : "Time left"}
-              </p>
-            </div>
-         </CardContent>
-      </Card>  
+      {/* OR Scanner model */}
     </div>
-
-    </div>
-
-    {/* OR Scanner model */}
-  </div>;
+  );
 };
 
 export default EventDashboard;

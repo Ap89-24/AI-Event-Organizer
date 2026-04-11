@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { internalQuery, mutation, query } from "./_generated/server";
+import {  mutation, query } from "./_generated/server";
 import { internal } from "./_generated/api";
 
 export const store = mutation({
@@ -23,9 +23,23 @@ export const store = mutation({
       .unique();
     if (user !== null) {
       // If we've seen this identity before but the name has changed, patch the value.
+       // If we've seen this identity before but details changed, update them
+      const updates = {};
       if (user.name !== identity.name) {
-        await ctx.db.patch(user._id, { name: identity.name, updatedAt: Date.now() });
+        updates.name = identity.name ?? "Anonymous";
       }
+      if (user.email !== identity.email) {
+        updates.email = identity.email ?? "";
+      }
+      if (user.profileImageUrl !== identity.profileImageUrl) {
+        updates.profileImageUrl = identity.profileImageUrl;
+      }
+
+      if (Object.keys(updates).length > 0) {
+        updates.updatedAt = Date.now();
+        await ctx.db.patch(user._id, updates);
+      }
+
       return user._id;
     }
     // If it's a new identity, create a new `User`.
