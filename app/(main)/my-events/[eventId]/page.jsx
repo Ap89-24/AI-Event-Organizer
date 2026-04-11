@@ -26,6 +26,7 @@ import Image from "next/image";
 import { notFound, useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
+import AttendeeCard from "./_components/AttendeeCard";
 
 const EventDashboard = () => {
   const params = useParams();
@@ -315,9 +316,16 @@ const EventDashboard = () => {
           </div>
 
           <TabsContent value={activeTab} className="space-y-3 mt-0">
-             {activeTab}
+             {filterRegistrations && filterRegistrations.length > 0 ? (
+              filterRegistrations.map((reg) => (
+                <AttendeeCard key={reg._id} registration={reg} />
+              ))
+             ) : (
+              <div className="text-center py-12 text-muted-foreground">
+               No Attendees found 📭📭
+              </div>
+             )}
           </TabsContent>
-          <TabsContent value="password">Change your password here.</TabsContent>
         </Tabs>
       </div>
 
