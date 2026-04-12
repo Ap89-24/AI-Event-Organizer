@@ -19,7 +19,7 @@ export const getEventDashboard = query({
     // console.log("EVENT:", event);
 
     //* Check if the user is the organizer of the event...
-    if (event.organizerId !== user._id) {
+    if (event.organizerId.toString() !== user._id.toString()) {
       throw new Error("You are not authorized to view this dashboard.");
     }
 

@@ -55,7 +55,7 @@ const AttendeeCard = ({registration}) => {
                 : format(registration.registeredAt, "PPp")
                 }
                </span>
-               <span className="font-mono">QR: {registration.qrCode}</span>
+               <span className="font-mono">QR Code: {registration.qrCode}</span>
             </div>
 
           </div>

@@ -40,6 +40,7 @@ export const store = mutation({
         await ctx.db.patch(user._id, updates);
       }
 
+
       return user._id;
     }
     // If it's a new identity, create a new `User`.
@@ -73,9 +74,8 @@ export const getCurrentUser = query({
     .unique();
 
     if(!user){
-      throw new Error("User not found in database");
+      return null;
     }
-
     return user;
   },
 })

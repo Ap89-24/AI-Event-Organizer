@@ -27,6 +27,7 @@ import { notFound, useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import AttendeeCard from "./_components/AttendeeCard";
+import QRScannerModel from "./_components/QRScannerModel";
 
 const EventDashboard = () => {
   const params = useParams();
@@ -189,7 +190,7 @@ const EventDashboard = () => {
             className="mb-8 w-full gap-2 h-10 bg-linear-to-r from-orange-500 via-pink-500 to-red-500 text-white hover:scale-[1.02]"
             onClick={() => setShowQrScanner(true)}
           >
-            <QrCode className="w-5 h-5" />
+            <QrCode className="w-6 h-6" />
             Scan QR code to Check-In
           </Button>
         )}
@@ -330,6 +331,12 @@ const EventDashboard = () => {
       </div>
 
       {/* OR Scanner model */}
+      {showQrScanner && (
+        <QRScannerModel
+        isOpen={showQrScanner}
+        onClose={() => setShowQrScanner(false)}
+        />
+      )}
     </div>
   );
 };
