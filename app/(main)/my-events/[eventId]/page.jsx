@@ -65,6 +65,7 @@ const EventDashboard = () => {
 
   const { event, stats } = DashboardData;
 
+
   //! Filter registrations based on active tab and search query...
   const filterRegistrations = registrations.filter((reg) => {
     const matchesSearch =
@@ -182,7 +183,7 @@ const EventDashboard = () => {
             </Button>
           </div>
         </div>
-
+ 
         {/* //! show QR if event is today... */}
         {stats.isEventToday && !stats.isEventPast && (
           <Button
