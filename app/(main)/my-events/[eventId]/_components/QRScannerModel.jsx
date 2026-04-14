@@ -22,13 +22,14 @@ const QRScannerModel = ({isOpen , onClose}) => {
     api.registrations.checkInAttendee,
   );
 
-      const handleCheckIn = async() => {
+      const handleCheckIn = async(qrCode) => {
         try {
             const result = await checkInAttendee({
                 qrCode
             });
             if(result.success){
                 toast.success("Check-In Successfully");
+                onClose();
             }
             else{
                 toast.error(result.message || "Failed to check-in");
